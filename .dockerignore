@@ -1,0 +1,55 @@
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Data files (large CSV)
+*.csv
+*.CSV
+data/
+
+# Testing
+htmlcov/
+.pytest_cache/
+.coverage
+*.coverage
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Environment (should use Railway env vars)
+.env
+.env.local
+.env.*.local
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Scripts (not needed in production)
+scripts/etl/
+scripts/performance/
+
+# Temporary files
+*.tmp
+*.log
