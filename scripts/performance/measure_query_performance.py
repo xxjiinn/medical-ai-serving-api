@@ -155,7 +155,7 @@ def run_performance_tests():
     print("  - idx_invalid: 유효 데이터 필터링")
     print("  - idx_composite_stats: risk_group + invalid_flag 복합")
     print("\n성능 개선 포인트:")
-    if any(r['avg'] > 100 for r in results):ㅎ
+    if any(r['avg'] > 100 for r in results):
         print("  ⚠️  일부 쿼리가 100ms 초과 → 인덱스 추가 고려")
     else:
         print("  ✅ 모든 쿼리가 100ms 이하 → 인덱스 효과적")
