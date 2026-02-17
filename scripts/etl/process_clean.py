@@ -99,7 +99,7 @@ def calculate_risk_factors(raw_data, bmi):
         }
     """
     flags = {}
-
+#
     # 1. 고혈압 (SBP≥140 or DBP≥90)
     flags['flag_hypertension'] = (
         raw_data.systolic_bp >= 140 or raw_data.diastolic_bp >= 90
