@@ -18,3 +18,8 @@ __pycache__/
 
 # Documentation temp files
 *.tmp.md
+
+# Testing
+htmlcov/
+.pytest_cache/
+.coverage
