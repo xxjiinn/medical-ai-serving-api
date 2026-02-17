@@ -5,9 +5,15 @@ FROM python:3.13-slim as builder
 
 WORKDIR /app
 
-# Install build dependencies
+# Install build dependencies (for cryptography, PyMySQL, etc.)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    g++ \
+    python3-dev \
+    libffi-dev \
+    libssl-dev \
+    cargo \
+    rustc \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
