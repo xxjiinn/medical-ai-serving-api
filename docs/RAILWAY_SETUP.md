@@ -14,8 +14,8 @@
 2. **Add Service** → **Database** → **MySQL**
 3. 생성 후 **Variables** 탭에서 연결 정보 확인:
    - `MYSQL_URL` 복사 (형식: `mysql://user:password@host:port/railway`)
-
 4. `.env` 파일에 추가:
+
 ```bash
 DATABASE_URL=mysql+pymysql://user:password@host:port/railway
 ```
@@ -29,6 +29,7 @@ DATABASE_URL=mysql+pymysql://user:password@host:port/railway
    - `REDIS_URL` 복사 (형식: `redis://host:port`)
 
 3. `.env` 파일에 추가:
+
 ```bash
 REDIS_URL=redis://host:port/0
 ```
@@ -65,11 +66,13 @@ python scripts/etl/load_raw.py
 ## 6. 리소스 제한 고려
 
 Railway Hobby Plan 제약:
+
 - 메모리: 512MB ~ 8GB (사용량 기반 과금)
 - CPU: Shared
 - 네트워크: 100GB/월
 
 **권장**:
+
 - 데모 데이터: 30만건 이하
 - ETL chunk size: 10,000 rows
 - 쿼리 최적화 필수
