@@ -9,12 +9,14 @@ from sqlalchemy import func, case
 from app.middleware.auth import require_api_key
 from app.database import SessionLocal
 from app.models.health_check import RawHealthCheck, CleanRiskResult
+from app.cache import cached
 
 stats_bp = Blueprint('stats', __name__)
 
 
 @stats_bp.route('/risk', methods=['GET'])
 @require_api_key
+@cached(ttl=60)
 def get_risk_stats():
     """
     GET /stats/risk
@@ -48,13 +50,12 @@ def get_risk_stats():
         # 무효 레코드 수
         invalid_count = db.query(CleanRiskResult).filter_by(invalid_flag=True).count()
 
-        return jsonify({
+        return {
             'risk_distribution': risk_distribution,
             'total_records': total + invalid_count,
             'valid_records': total,
-            'invalid_records': invalid_count,
-            'cached': False  # Phase 6에서 캐싱 적용 시 True
-        })
+            'invalid_records': invalid_count
+        }
 
     finally:
         db.close()
@@ -62,6 +63,7 @@ def get_risk_stats():
 
 @stats_bp.route('/age', methods=['GET'])
 @require_api_key
+@cached(ttl=60)
 def get_age_stats():
     """
     GET /stats/age
@@ -104,11 +106,10 @@ def get_age_stats():
                 'high_risk_count': row.high_risk_count or 0
             })
 
-        return jsonify({
+        return {
             'age_distribution': age_distribution,
-            'total_records': total,
-            'cached': False  # Phase 6에서 캐싱 적용 시 True
-        })
+            'total_records': total
+        }
 
     finally:
         db.close()
