@@ -31,13 +31,8 @@ COPY . .
 ENV PATH=/root/.local/bin:$PATH
 
 # Expose port (Railway auto-assigns PORT env var)
-ENV PORT=5001
-EXPOSE $PORT
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD python -c "import os, requests; requests.get(f'http://localhost:{os.getenv(\"PORT\", 5001)}/health')" || exit 1
+EXPOSE 5001
 
 # Run with gunicorn for production
-# Railway will override PORT via environment variable
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-5001} --workers 2 --threads 2 --timeout 120 run:app"]
+# Use shell form to properly expand environment variables
+CMD gunicorn --bind 0.0.0.0:${PORT:-5001} --workers 2 --threads 2 --timeout 120 run:app
