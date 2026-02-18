@@ -221,7 +221,7 @@
                             <div class="font-semibold text-green-400">저위험군</div>
                         </div>
                         <div class="text-xs text-gray-400">위험요인 0-1개</div>
-                        <div class="text-xs text-gray-300 mt-1">정기 검진 권장</div>
+                        <div class="text-xs text-gray-200 mt-1">정기 검진 권장</div>
                     </div>
                     <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
                         <div class="flex items-center space-x-2 mb-2">
@@ -229,7 +229,7 @@
                             <div class="font-semibold text-yellow-400">중등도 위험군</div>
                         </div>
                         <div class="text-xs text-gray-400">위험요인 2개 이상</div>
-                        <div class="text-xs text-gray-300 mt-1">생활습관 개선 필요</div>
+                        <div class="text-xs text-gray-200 mt-1">생활습관 개선 필요</div>
                     </div>
                     <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                         <div class="flex items-center space-x-2 mb-2">
@@ -237,7 +237,7 @@
                             <div class="font-semibold text-red-400">고위험군</div>
                         </div>
                         <div class="text-xs text-gray-400">당뇨 또는 심혈관질환</div>
-                        <div class="text-xs text-gray-300 mt-1">적극적 치료 필요</div>
+                        <div class="text-xs text-gray-200 mt-1">적극적 치료 필요</div>
                     </div>
                 </div>
                 <div id="riskResponse" class="bg-black/30 rounded-lg p-4 overflow-x-auto hidden">
@@ -290,19 +290,20 @@
                                 <label class="block text-xs text-gray-400 mb-1">Age Group</label>
                                 <select id="filterAge" class="w-full px-3 py-2 rounded text-sm">
                                     <option value="">All</option>
-                                    <option value="6">30-34</option>
-                                    <option value="7">35-39</option>
-                                    <option value="8">40-44</option>
-                                    <option value="9">45-49</option>
-                                    <option value="10">50-54</option>
-                                    <option value="11">55-59</option>
-                                    <option value="12">60-64</option>
-                                    <option value="13">65-69</option>
-                                    <option value="14">70-74</option>
-                                    <option value="15">75-79</option>
-                                    <option value="16">80-84</option>
-                                    <option value="17">85-89</option>
-                                    <option value="18">90+</option>
+                                    <option value="5">25-29세</option>
+                                    <option value="6">30-34세</option>
+                                    <option value="7">35-39세</option>
+                                    <option value="8">40-44세</option>
+                                    <option value="9">45-49세</option>
+                                    <option value="10">50-54세</option>
+                                    <option value="11">55-59세</option>
+                                    <option value="12">60-64세</option>
+                                    <option value="13">65-69세</option>
+                                    <option value="14">70-74세</option>
+                                    <option value="15">75-79세</option>
+                                    <option value="16">80-84세</option>
+                                    <option value="17">85-89세</option>
+                                    <option value="18">90세 초과</option>
                                 </select>
                             </div>
                             <div>
@@ -385,6 +386,7 @@
                             <div>
                                 <label class="block text-sm font-semibold text-gray-400 mb-2">Age Group</label>
                                 <select id="simAge" class="w-full px-4 py-2 rounded-lg">
+                                    <option value="5">25-29세</option>
                                     <option value="6">30-34세</option>
                                     <option value="7">35-39세</option>
                                     <option value="8">40-44세</option>
@@ -397,7 +399,7 @@
                                     <option value="15">75-79세</option>
                                     <option value="16">80-84세</option>
                                     <option value="17">85-89세</option>
-                                    <option value="18">90+세</option>
+                                    <option value="18">90세 초과</option>
                                 </select>
                             </div>
                             <div>
@@ -860,15 +862,10 @@
         }
 
         function getAgeDisplay(ageGroup) {
-            const ageMap = {
-                6: '30-34',
-                8: '40-44',
-                10: '50-54',
-                12: '60-64',
-                14: '70-74',
-                16: '80-84'
-            };
-            return ageMap[ageGroup] || `Age ${ageGroup}`;
+            if (ageGroup < 4) return '<20세';
+            if (ageGroup === 18) return '90세 초과';
+            const startAge = ageGroup * 5;
+            return `${startAge}-${startAge + 4}세`;
         }
 
         // Simulate Risk

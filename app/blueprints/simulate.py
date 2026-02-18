@@ -140,7 +140,7 @@ def simulate():
 
     # 범위 검증
     validations = {
-        'age_group': (6, 18),
+        'age_group': (5, 18),
         'gender': (1, 2),
         'height': (140, 200),
         'weight': (30, 150),
