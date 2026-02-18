@@ -440,51 +440,63 @@
                                     <option value="2">Female</option>
                                 </select>
                             </div>
+
+
                             <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Height (cm)</label>
-                                <input type="number" id="simHeight" value="175" class="w-full px-4 py-2 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Height (cm)</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(140-200)</span>
+                                </div>
+                                <input type="number" id="simHeight" value="175" class="w-full px-4 py-2 rounded-lg" placeholder="140-200">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Weight (kg)</label>
-                                <input type="number" id="simWeight" value="80" class="w-full px-4 py-2 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Weight (kg)</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(30-150)</span>
+                                </div>
+                                <input type="number" id="simWeight" value="80" class="w-full px-4 py-2 rounded-lg" placeholder="30-150">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Systolic BP</label>
-                                <input type="number" id="simSBP" value="145" class="w-full px-4 py-2 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Systolic BP</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(70-250)</span>
+                                </div>
+                                <input type="number" id="simSBP" value="145" class="w-full px-4 py-2 rounded-lg" placeholder="70-250">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Diastolic BP</label>
-                                <input type="number" id="simDBP" value="95" class="w-full px-4 py-2 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Diastolic BP</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(40-150)</span>
+                                </div>
+                                <input type="number" id="simDBP" value="95" class="w-full px-4 py-2 rounded-lg" placeholder="40-150">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Fasting Glucose</label>
-                                <input type="number" id="simGlucose" value="110" class="w-full px-4 py-2 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Fasting Glucose</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(50-400)</span>
+                                </div>
+                                <input type="number" id="simGlucose" value="110" class="w-full px-4 py-2 rounded-lg" placeholder="50-400">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Total Cholesterol</label>
-                                <input type="number" id="simTC" value="250" class="w-full px-4 py-2 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Total Cholesterol</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(100-400)</span>
+                                </div>
+                                <input type="number" id="simTC" value="250" class="w-full px-4 py-2 rounded-lg" placeholder="100-400">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Triglycerides</label>
-                                <input type="number" id="simTG" value="200" class="w-full px-4 py-2 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Triglycerides</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(30-500)</span>
+                                </div>
+                                <input type="number" id="simTG" value="200" class="w-full px-4 py-2 rounded-lg" placeholder="30-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">HDL Cholesterol</label>
-                                <input type="number" id="simHDL" value="45" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Smoking Status</label>
-                                <select id="simSmoking" class="w-full px-4 py-2 rounded-lg">
-                                    <option value="never" selected>Never</option>
-                                    <option value="former">Former</option>
-                                    <option value="current">Current</option>
-                                </select>
-                            </div>
-                            <div class="flex items-end">
-                                <button onclick="simulateRisk()"
-                                    class="btn-primary w-full px-6 py-2 rounded-lg font-semibold">
-                                    위험도 계산
-                                </button>
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">HDL Cholesterol</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(20-2000</span>
+                                </div>
+                                <input type="number" id="simHDL" value="45" class="w-full px-4 py-2 rounded-lg" placeholder="20-200">
                             </div>
                         </div>
                     </div>
