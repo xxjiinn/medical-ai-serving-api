@@ -40,4 +40,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 # Run with gunicorn for production
 # Railway will override PORT via environment variable
-CMD gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 120 run:app
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-5001} --workers 2 --threads 2 --timeout 120 run:app"]
