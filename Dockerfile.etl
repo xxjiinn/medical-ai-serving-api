@@ -1,0 +1,18 @@
+# ETL Job Dockerfile - runs once to load data
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy requirements
+COPY requirements.txt requirements-etl.txt ./
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-etl.txt
+
+# Copy app code and ETL scripts
+COPY app/ ./app/
+COPY scripts/ ./scripts/
+COPY 국민건강보험공단_건강검진정보_2024.CSV ./
+
+# Run ETL pipeline
+CMD python scripts/etl/load_raw.py && python scripts/etl/process_clean.py
