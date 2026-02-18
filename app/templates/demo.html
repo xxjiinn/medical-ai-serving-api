@@ -203,13 +203,42 @@
             <!-- Risk Distribution -->
             <div class="bg-gray-900/50 card-glow rounded-xl p-8 border border-gray-800">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-2xl font-bold text-white">위험군 분포 통계</h3>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">심혈관 질환 위험군 분포</h3>
+                        <p class="text-sm text-gray-400 mt-1">ATP III 프레임워크 기반 위험도 분류</p>
+                    </div>
                     <button onclick="fetchRiskStats()" class="btn-primary px-6 py-2 rounded-lg text-sm font-semibold">
                         통계 조회
                     </button>
                 </div>
-                <div class="bg-jlk-navy/50 rounded-lg p-6 mb-6">
+                <div class="bg-jlk-navy/50 rounded-lg p-6 mb-4">
                     <canvas id="riskChart" height="280"></canvas>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                    <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <div class="font-semibold text-green-400">저위험군</div>
+                        </div>
+                        <div class="text-xs text-gray-400">위험요인 0-1개</div>
+                        <div class="text-xs text-gray-500 mt-1">정기 검진 권장</div>
+                    </div>
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <div class="font-semibold text-yellow-400">중등도 위험군</div>
+                        </div>
+                        <div class="text-xs text-gray-400">위험요인 2개 이상</div>
+                        <div class="text-xs text-gray-500 mt-1">생활습관 개선 필요</div>
+                    </div>
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <div class="font-semibold text-red-400">고위험군</div>
+                        </div>
+                        <div class="text-xs text-gray-400">당뇨 또는 심혈관질환</div>
+                        <div class="text-xs text-gray-500 mt-1">적극적 치료 필요</div>
+                    </div>
                 </div>
                 <div id="riskResponse" class="bg-black/30 rounded-lg p-4 overflow-x-auto hidden">
                     <pre class="text-xs text-gray-400"><code id="riskJson"></code></pre>
@@ -219,13 +248,18 @@
             <!-- Age Distribution -->
             <div class="bg-gray-900/50 card-glow rounded-xl p-8 border border-gray-800">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-2xl font-bold text-white">연령대별 분포</h3>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">연령대별 검진자 분포</h3>
+                        <p class="text-sm text-gray-400 mt-1">5세 단위 연령대별 건강검진 데이터</p>
+                    </div>
                     <button onclick="fetchAgeStats()" class="btn-primary px-6 py-2 rounded-lg text-sm font-semibold">
                         통계 조회
                     </button>
                 </div>
-                <div class="bg-jlk-navy/50 rounded-lg p-6 mb-6">
-                    <canvas id="ageChart" height="280"></canvas>
+                <div class="bg-jlk-navy/50 rounded-lg p-6 mb-4">
+                    <div id="ageChartContainer">
+                        <canvas id="ageChart"></canvas>
+                    </div>
                 </div>
                 <div id="ageResponse" class="bg-black/30 rounded-lg p-4 overflow-x-auto hidden">
                     <pre class="text-xs text-gray-400"><code id="ageJson"></code></pre>
@@ -234,39 +268,98 @@
 
             <!-- Records Table -->
             <div class="bg-gray-900/50 card-glow rounded-xl p-8 border border-gray-800 lg:col-span-2">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-2xl font-bold text-white">건강검진 레코드 조회</h3>
-                    <div class="flex items-center space-x-4">
-                        <select id="recordLimit" class="px-4 py-2 rounded-lg">
-                            <option value="5">5 records</option>
-                            <option value="10" selected>10 records</option>
-                            <option value="20">20 records</option>
-                        </select>
-                        <button onclick="fetchRecords()" class="btn-primary px-6 py-2 rounded-lg text-sm font-semibold">
-                            조회
-                        </button>
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">건강검진 레코드 조회</h3>
+                            <p class="text-sm text-gray-400 mt-1">
+                                Redis 캐싱 + MySQL 인덱싱 최적화
+                                <span id="queryTime" class="text-jlk-cyan font-semibold"></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Filters -->
+                    <div class="bg-jlk-navy/30 rounded-lg p-4 mb-4">
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Age Group</label>
+                                <select id="filterAge" class="w-full px-3 py-2 rounded text-sm">
+                                    <option value="">All</option>
+                                    <option value="6">30-34</option>
+                                    <option value="8">40-44</option>
+                                    <option value="10">50-54</option>
+                                    <option value="12">60-64</option>
+                                    <option value="14">70-74</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Gender</label>
+                                <select id="filterGender" class="w-full px-3 py-2 rounded text-sm">
+                                    <option value="">All</option>
+                                    <option value="1">Male</option>
+                                    <option value="2">Female</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Risk Group</label>
+                                <select id="filterRisk" class="w-full px-3 py-2 rounded text-sm">
+                                    <option value="">All</option>
+                                    <option value="ZERO_TO_ONE_RISK_FACTOR">Low Risk</option>
+                                    <option value="MULTIPLE_RISK_FACTORS">Multiple Risk</option>
+                                    <option value="CHD_RISK_EQUIVALENT">High Risk</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Limit</label>
+                                <select id="recordLimit" class="w-full px-3 py-2 rounded text-sm">
+                                    <option value="10">10</option>
+                                    <option value="20" selected>20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="fetchRecords()" class="btn-primary w-full px-4 py-2 rounded text-sm font-semibold">
+                                    🔍 조회
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="overflow-x-auto">
                     <table class="w-full" id="recordsTable">
                         <thead class="bg-jlk-purple/20 border-b border-jlk-purple/30">
                             <tr>
                                 <th class="px-4 py-3 text-left text-sm font-semibold text-gray-300">ID</th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-300">Age Group</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-300">Age</th>
                                 <th class="px-4 py-3 text-left text-sm font-semibold text-gray-300">Gender</th>
                                 <th class="px-4 py-3 text-left text-sm font-semibold text-gray-300">BMI</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-300">Blood Pressure</th>
                                 <th class="px-4 py-3 text-left text-sm font-semibold text-gray-300">Risk Factors</th>
                                 <th class="px-4 py-3 text-left text-sm font-semibold text-gray-300">Risk Group</th>
                             </tr>
                         </thead>
                         <tbody id="recordsBody" class="divide-y divide-gray-800">
                             <tr>
-                                <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                                    조회 버튼을 클릭하세요
+                                <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                                    필터를 선택하고 조회 버튼을 클릭하세요
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div id="recordPagination" class="mt-4 flex items-center justify-between text-sm text-gray-400 hidden">
+                    <div>
+                        Showing <span id="recordsShowing" class="text-white font-semibold">0</span> records
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="prevPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition" id="prevBtn">Previous</button>
+                        <span>Page <span id="currentPage" class="text-white font-semibold">1</span></span>
+                        <button onclick="nextPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition" id="nextBtn">Next</button>
+                    </div>
                 </div>
             </div>
 
@@ -495,10 +588,18 @@
             const labels = [];
             const counts = [];
 
-            Object.entries(distribution).forEach(([key, value]) => {
-                labels.push(value.age_range);
+            // Sort by age group code
+            const sortedEntries = Object.entries(distribution).sort((a, b) => {
+                return parseInt(a[0]) - parseInt(b[0]);
+            });
+
+            sortedEntries.forEach(([key, value]) => {
+                labels.push(value.age_range || key);
                 counts.push(value.count);
             });
+
+            const container = document.getElementById('ageChartContainer');
+            container.style.height = '280px';
 
             ageChart = new Chart(ctx, {
                 type: 'bar',
@@ -520,7 +621,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return 'Count: ' + context.parsed.y.toLocaleString();
+                                    return 'Records: ' + context.parsed.y.toLocaleString();
                                 }
                             }
                         }
@@ -528,11 +629,20 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { color: '#9CA3AF' },
+                            ticks: {
+                                color: '#9CA3AF',
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                }
+                            },
                             grid: { color: 'rgba(75, 85, 99, 0.2)' }
                         },
                         x: {
-                            ticks: { color: '#9CA3AF' },
+                            ticks: {
+                                color: '#9CA3AF',
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
                             grid: { display: false }
                         }
                     }
@@ -540,43 +650,126 @@
             });
         }
 
-        // Fetch Records
-        async function fetchRecords() {
+        // Fetch Records with Filters
+        let currentPage = 1;
+        async function fetchRecords(page = 1) {
             const limit = document.getElementById('recordLimit').value;
+            const filterAge = document.getElementById('filterAge').value;
+            const filterGender = document.getElementById('filterGender').value;
+            const filterRisk = document.getElementById('filterRisk').value;
+
             const tbody = document.getElementById('recordsBody');
-            tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center"><div class="loading-spinner w-8 h-8 rounded-full mx-auto"></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center"><div class="loading-spinner w-8 h-8 rounded-full mx-auto"></div></td></tr>';
+
+            currentPage = page;
+            const startTime = performance.now();
 
             try {
-                const response = await fetch(`${API_BASE}/records?limit=${limit}`, {
+                let url = `${API_BASE}/records?limit=${limit}&page=${page}`;
+
+                // Note: API doesn't support filters yet, but UI demonstrates the concept
+                // In real implementation, backend would handle: age_group=${filterAge}&gender=${filterGender}&risk_group=${filterRisk}
+
+                const response = await fetch(url, {
                     headers: { 'X-API-Key': API_KEY }
                 });
                 const data = await response.json();
+                const endTime = performance.now();
+                const queryTime = (endTime - startTime).toFixed(0);
+
+                // Show query time (demonstrates caching/indexing benefit)
+                document.getElementById('queryTime').textContent = `(Query: ${queryTime}ms)`;
 
                 tbody.innerHTML = '';
-                data.data.forEach(record => {
+
+                // Apply client-side filtering for demo (in production, this would be server-side)
+                let filteredData = data.data;
+                if (filterAge) {
+                    filteredData = filteredData.filter(r => r.age_group == filterAge);
+                }
+                if (filterGender) {
+                    filteredData = filteredData.filter(r => r.gender == filterGender);
+                }
+                if (filterRisk) {
+                    filteredData = filteredData.filter(r => r.risk_group === filterRisk);
+                }
+
+                if (filteredData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-gray-500">No records found with selected filters</td></tr>';
+                    return;
+                }
+
+                filteredData.forEach(record => {
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-gray-800/50 transition';
+
+                    // Get flags from record
+                    const flags = record.flags || {};
+                    const sbp = flags.hypertension ? '140+' : '<140';
+
                     row.innerHTML = `
-                        <td class="px-4 py-3 text-sm">${record.id}</td>
-                        <td class="px-4 py-3 text-sm">${record.age_group}</td>
-                        <td class="px-4 py-3 text-sm">${record.gender === 1 ? 'Male' : 'Female'}</td>
-                        <td class="px-4 py-3 text-sm">${record.bmi}</td>
+                        <td class="px-4 py-3 text-sm font-mono text-gray-400">#${record.id}</td>
                         <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-1 bg-jlk-purple/20 text-jlk-cyan rounded text-xs">
-                                ${record.risk_factor_count}
-                            </span>
+                            <span class="px-2 py-1 bg-gray-800 rounded text-xs">${getAgeDisplay(record.age_group)}</span>
                         </td>
                         <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-1 rounded text-xs ${getRiskGroupColor(record.risk_group)}">
+                            ${record.gender === 1 ? '👨 Male' : '👩 Female'}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <span class="${record.bmi >= 25 ? 'text-red-400' : 'text-green-400'} font-semibold">
+                                ${record.bmi}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-400">
+                            ${sbp}/${flags.hypertension ? '90+' : '<90'}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-jlk-purple/20 text-jlk-cyan rounded text-xs font-semibold">
+                                    ${record.risk_factor_count}/7
+                                </span>
+                                ${record.risk_factor_count > 0 ? '<span class="text-xs text-gray-500">factors</span>' : ''}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${getRiskGroupColor(record.risk_group)}">
                                 ${formatRiskGroup(record.risk_group)}
                             </span>
                         </td>
                     `;
                     tbody.appendChild(row);
                 });
+
+                // Update pagination
+                document.getElementById('recordsShowing').textContent = filteredData.length;
+                document.getElementById('currentPage').textContent = page;
+                document.getElementById('recordPagination').classList.remove('hidden');
             } catch (error) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-red-400">Failed to load records</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-red-400">Failed to load records</td></tr>';
+                console.error('Error:', error);
             }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                fetchRecords(currentPage - 1);
+            }
+        }
+
+        function nextPage() {
+            fetchRecords(currentPage + 1);
+        }
+
+        function getAgeDisplay(ageGroup) {
+            const ageMap = {
+                6: '30-34',
+                8: '40-44',
+                10: '50-54',
+                12: '60-64',
+                14: '70-74',
+                16: '80-84'
+            };
+            return ageMap[ageGroup] || `Age ${ageGroup}`;
         }
 
         // Simulate Risk
