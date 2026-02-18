@@ -276,6 +276,10 @@
                                 Redis 캐싱 + MySQL 인덱싱 최적화
                                 <span id="queryTime" class="text-jlk-cyan font-semibold"></span>
                             </p>
+                            <div class="mt-2 text-sm">
+                                <span class="text-gray-500">Total Filtered:</span>
+                                <span id="totalFilteredCount" class="text-white font-bold">0</span>
+                            </div>
                             <p class="text-xs text-gray-500 mt-1">
                                 💡 전체 100만 레코드 중 유효한 데이터만 표시 (invalid_flag=False)<br>
                                 첫 유효 레코드: ID #657,409 (이전 레코드들은 필수 필드 누락/생물학적 범위 초과)
@@ -371,7 +375,8 @@
                     </div>
                     <div class="flex items-center space-x-2">
                         <button onclick="prevPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition" id="prevBtn">Previous</button>
-                        <span>Page <span id="currentPage" class="text-white font-semibold">1</span></span>
+                        <span>Page <span id="currentPage" class="text-white font-semibold">1</span> of <span id="totalPages"
+                                class="text-white font-semibold">1</span></span>
                         <button onclick="nextPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition" id="nextBtn">Next</button>
                     </div>
                 </div>
@@ -526,8 +531,11 @@
             }
         }
 
+        Chart.defaults.color = '#E5E7EB'; // 모든 차트 글자색을 밝은 회색으로 강제 고정
+
         // Display Risk Chart
         function displayRiskChart(distribution) {
+            
             const ctx = document.getElementById('riskChart');
 
             if (riskChart) riskChart.destroy();
@@ -568,13 +576,14 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
+                            display: true,
                             position: 'bottom',
                             labels: {
-                                color: '#E5E7EB',
+                                color: '#E5E7EB', // 1. 전체 라벨 색상 지정
                                 font: { size: 12, weight: '500' },
-                                padding: 15,
-                                usePointStyle: true, // 도트 형태로 깔끔하게 표시
-                                generateLabels: function(chart) {
+                                padding: 20,
+                                usePointStyle: true,
+                                generateLabels: function (chart) {
                                     const data = chart.data;
                                     return data.labels.map((label, i) => {
                                         const value = data.datasets[0].data[i];
@@ -585,7 +594,8 @@
                                             strokeStyle: data.datasets[0].borderColor[i],
                                             lineWidth: 2,
                                             hidden: false,
-                                            index: i
+                                            index: i,
+                                            fontColor: '#E5E7EB' // 2. 각 라벨 객체에 텍스트 색상 강제 주입 
                                         };
                                     });
                                 }
@@ -769,6 +779,16 @@
                     headers: { 'X-API-Key': API_KEY }
                 });
                 const data = await response.json();
+
+                // 1. 상단 총 개수 업데이트
+                document.getElementById('totalFilteredCount').textContent = data.pagination.total_items.toLocaleString();
+
+                // 2. 하단 총 페이지 수 업데이트
+                document.getElementById('totalPages').textContent = data.pagination.total_pages;
+
+                // 3. 버튼 활성화/비활성화 로직 추가 (선택사항이지만 권장)
+                document.getElementById('prevBtn').disabled = (page === 1);
+                document.getElementById('nextBtn').disabled = (page === data.pagination.total_pages);
 
                 if (data.error) {
                     tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-red-400">${data.message || 'Failed to load records'}</td></tr>`;
