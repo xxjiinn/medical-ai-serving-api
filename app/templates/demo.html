@@ -152,13 +152,13 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="stat-card card-glow rounded-xl p-6 cursor-pointer" onclick="showModal('totalRecords')">
                 <div class="text-gray-400 text-sm font-semibold mb-2">Total Records</div>
-                <div class="text-4xl font-bold gradient-text" id="totalRecords">-</div>
+                <div class="text-4xl font-bold gradient-text" id="totalRecords">1,000,000</div>
                 <div class="text-xs text-gray-500 mt-2">국민건강보험 데이터</div>
                 <div class="text-xs text-jlk-cyan mt-2">클릭하여 자세히 보기 →</div>
             </div>
             <div class="stat-card card-glow rounded-xl p-6 cursor-pointer" onclick="showModal('validRecords')">
                 <div class="text-gray-400 text-sm font-semibold mb-2">Valid Records</div>
-                <div class="text-4xl font-bold text-green-400" id="validRecords">-</div>
+                <div class="text-4xl font-bold text-green-400" id="validRecords">340,686</div>
                 <div class="text-xs text-gray-500 mt-2">생물학적 범위 검증 완료</div>
                 <div class="text-xs text-jlk-cyan mt-2">클릭하여 자세히 보기 →</div>
             </div>
@@ -221,7 +221,7 @@
                             <div class="font-semibold text-green-400">저위험군</div>
                         </div>
                         <div class="text-xs text-gray-400">위험요인 0-1개</div>
-                        <div class="text-xs text-gray-500 mt-1">정기 검진 권장</div>
+                        <div class="text-xs text-gray-300 mt-1">정기 검진 권장</div>
                     </div>
                     <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
                         <div class="flex items-center space-x-2 mb-2">
@@ -229,7 +229,7 @@
                             <div class="font-semibold text-yellow-400">중등도 위험군</div>
                         </div>
                         <div class="text-xs text-gray-400">위험요인 2개 이상</div>
-                        <div class="text-xs text-gray-500 mt-1">생활습관 개선 필요</div>
+                        <div class="text-xs text-gray-300 mt-1">생활습관 개선 필요</div>
                     </div>
                     <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                         <div class="flex items-center space-x-2 mb-2">
@@ -237,7 +237,7 @@
                             <div class="font-semibold text-red-400">고위험군</div>
                         </div>
                         <div class="text-xs text-gray-400">당뇨 또는 심혈관질환</div>
-                        <div class="text-xs text-gray-500 mt-1">적극적 치료 필요</div>
+                        <div class="text-xs text-gray-300 mt-1">적극적 치료 필요</div>
                     </div>
                 </div>
                 <div id="riskResponse" class="bg-black/30 rounded-lg p-4 overflow-x-auto hidden">
@@ -291,10 +291,18 @@
                                 <select id="filterAge" class="w-full px-3 py-2 rounded text-sm">
                                     <option value="">All</option>
                                     <option value="6">30-34</option>
+                                    <option value="7">35-39</option>
                                     <option value="8">40-44</option>
+                                    <option value="9">45-49</option>
                                     <option value="10">50-54</option>
+                                    <option value="11">55-59</option>
                                     <option value="12">60-64</option>
+                                    <option value="13">65-69</option>
                                     <option value="14">70-74</option>
+                                    <option value="15">75-79</option>
+                                    <option value="16">80-84</option>
+                                    <option value="17">85-89</option>
+                                    <option value="18">90+</option>
                                 </select>
                             </div>
                             <div>
@@ -378,10 +386,18 @@
                                 <label class="block text-sm font-semibold text-gray-400 mb-2">Age Group</label>
                                 <select id="simAge" class="w-full px-4 py-2 rounded-lg">
                                     <option value="6">30-34세</option>
+                                    <option value="7">35-39세</option>
                                     <option value="8">40-44세</option>
+                                    <option value="9">45-49세</option>
                                     <option value="10" selected>50-54세</option>
+                                    <option value="11">55-59세</option>
                                     <option value="12">60-64세</option>
+                                    <option value="13">65-69세</option>
                                     <option value="14">70-74세</option>
+                                    <option value="15">75-79세</option>
+                                    <option value="16">80-84세</option>
+                                    <option value="17">85-89세</option>
+                                    <option value="18">90+세</option>
                                 </select>
                             </div>
                             <div>
@@ -409,7 +425,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-400 mb-2">Fasting Glucose</label>
-                                <input type="number" id="simGlucose" value="130" class="w-full px-4 py-2 rounded-lg">
+                                <input type="number" id="simGlucose" value="110" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-400 mb-2">Total Cholesterol</label>
@@ -421,14 +437,14 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-400 mb-2">HDL Cholesterol</label>
-                                <input type="number" id="simHDL" value="35" class="w-full px-4 py-2 rounded-lg">
+                                <input type="number" id="simHDL" value="45" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-400 mb-2">Smoking Status</label>
                                 <select id="simSmoking" class="w-full px-4 py-2 rounded-lg">
-                                    <option value="never">Never</option>
+                                    <option value="never" selected>Never</option>
                                     <option value="former">Former</option>
-                                    <option value="current" selected>Current</option>
+                                    <option value="current">Current</option>
                                 </select>
                             </div>
                             <div class="flex items-end">
@@ -890,15 +906,7 @@
                     return;
                 }
 
-                const flags = res.result.flags;
-                const riskFactors = [];
-                if (flags.hypertension) riskFactors.push('Hypertension');
-                if (flags.diabetes) riskFactors.push('Diabetes');
-                if (flags.high_total_cholesterol) riskFactors.push('High TC');
-                if (flags.high_triglycerides) riskFactors.push('High TG');
-                if (flags.low_hdl) riskFactors.push('Low HDL');
-                if (flags.obesity_asia) riskFactors.push('Obesity');
-                if (flags.smoking) riskFactors.push('Smoking');
+                const explanations = res.result.explanations || [];
 
                 result.innerHTML = `
                     <div class="text-center mb-4">
@@ -909,13 +917,13 @@
                     </div>
                     <div class="space-y-2">
                         <div class="text-xs font-semibold text-gray-400 mb-2">Risk Factors (${res.result.risk_factor_count}/7)</div>
-                        ${riskFactors.map(f => `
-                            <div class="flex items-center space-x-2 text-sm">
-                                <div class="w-2 h-2 bg-red-500 rounded-full"></div>
-                                <span>${f}</span>
+                        ${explanations.map(exp => `
+                            <div class="flex items-start space-x-2 text-sm">
+                                <div class="w-2 h-2 bg-red-500 rounded-full mt-1.5"></div>
+                                <span class="text-gray-300">${exp}</span>
                             </div>
                         `).join('')}
-                        ${riskFactors.length === 0 ? '<div class="text-sm text-gray-500">No risk factors detected</div>' : ''}
+                        ${explanations.length === 0 ? '<div class="text-sm text-gray-500">No risk factors detected</div>' : ''}
                     </div>
                 `;
             } catch (error) {
