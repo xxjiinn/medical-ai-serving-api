@@ -722,6 +722,11 @@
                 return parseInt(a[0]) - parseInt(b[0]);
             });
 
+            // Compute user's age label for comparison
+            const userAgeLabel = lastSimulationResult
+                ? (lastSimulationResult.age_group === 18 ? '90세 초과' : `${lastSimulationResult.age_group * 5}-${lastSimulationResult.age_group * 5 + 4}세`)
+                : null;
+
             sortedEntries.forEach(([key, value]) => {
                 const ageRange = ageRangeMap[key] || value.age_range || `${key}세`;
                 labels.push(ageRange);
@@ -730,11 +735,11 @@
                 const avgRisk = (value.count / 100000 * 1.5 + Math.random() * 0.5).toFixed(1);
                 avgRiskData.push(avgRisk);
 
-                // Highlight user's age group
-                if (lastSimulationResult && parseInt(key) === lastSimulationResult.age_group) {
-                    barColors.push('rgba(251, 191, 36, 0.9)');  // Gold for user
+                // Highlight user's age group (label-based comparison)
+                if (userAgeLabel && ageRange === userAgeLabel) {
+                    barColors.push('rgba(251, 191, 36, 0.9)');
                 } else {
-                    barColors.push('rgba(59, 130, 246, 0.8)');  // Default blue
+                    barColors.push('rgba(59, 130, 246, 0.8)');
                 }
             });
 
@@ -742,13 +747,14 @@
             container.style.height = '280px';
 
             // Inline plugin: draw "▼ 내 위치" above user's bar
+            // Use afterDatasetsDraw so tooltip renders on top of the marker
             const ageMarkerPlugin = {
                 id: 'ageMarker',
-                afterDraw(chart) {
+                afterDatasetsDraw(chart) {
                     if (!lastSimulationResult) return;
                     const ag = lastSimulationResult.age_group;
-                    const userLabel = ag === 18 ? '90세 초과' : `${ag * 5}-${ag * 5 + 4}세`;
-                    const idx = chart.data.labels.indexOf(userLabel);
+                    const uLabel = ag === 18 ? '90세 초과' : `${ag * 5}-${ag * 5 + 4}세`;
+                    const idx = chart.data.labels.indexOf(uLabel);
                     if (idx === -1) return;
                     const bar = chart.getDatasetMeta(0).data[idx];
                     if (!bar) return;
@@ -757,7 +763,8 @@
                     ctx2.fillStyle = '#fbbf24';
                     ctx2.font = 'bold 11px Inter, sans-serif';
                     ctx2.textAlign = 'center';
-                    ctx2.fillText('▼ 내 위치', bar.x, bar.y - 8);
+                    // bar.x is the exact center of the bar
+                    ctx2.fillText('▼ 내 위치', bar.x, bar.y - 6);
                     ctx2.restore();
                 }
             };
@@ -862,7 +869,7 @@
                     card.style.transform = 'scale(1.04)';
                     const badge = document.createElement('div');
                     badge.className = 'my-position-badge mt-2 text-center text-xs font-bold text-white bg-white/20 rounded px-2 py-0.5';
-                    badge.textContent = '▶ 내 위치';
+                    badge.textContent = '내 위치';
                     card.appendChild(badge);
                 }
 
@@ -875,9 +882,9 @@
                 }
             }
 
-            // --- Age Chart: redraw triggers afterDraw plugin ---
-            if (ageChart) ageChart.update();
-            if (riskChart) riskChart.update();
+            // --- Age Chart: redraw triggers marker plugin (no animation) ---
+            if (ageChart) ageChart.update('none');
+            if (riskChart) riskChart.update('none');
         }
 
         // Fetch Records with Filters
