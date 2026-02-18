@@ -4,7 +4,7 @@ Flask 애플리케이션 팩토리
 Blueprint 등록, 확장 초기화
 """
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 from app.config import get_config
 
@@ -41,5 +41,10 @@ def create_app():
     @app.route('/health')
     def health():
         return {'status': 'ok'}
+
+    @app.route('/demo')
+    def demo():
+        """Interactive demo page for interviewers"""
+        return render_template('demo.html')
 
     return app
