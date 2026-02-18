@@ -646,7 +646,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    devicePixelRatio: window.devicePixelRatio || 1,
+                    animation: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
@@ -762,10 +762,14 @@
                     const ctx2 = chart.ctx;
                     ctx2.save();
                     ctx2.fillStyle = '#fbbf24';
-                    ctx2.font = 'bold 14px Inter, sans-serif';
                     ctx2.textAlign = 'center';
-                    // Draw ▼ inside the bar, just below the top
-                    ctx2.fillText('▼', bar.x, bar.y + 16);
+                    ctx2.textBaseline = 'middle';
+                    // "내 위치" label above the ▼ arrow
+                    ctx2.font = 'bold 11px Inter, sans-serif';
+                    ctx2.fillText('내 위치', bar.x, bar.y - 22);
+                    // ▼ arrow just above the bar
+                    ctx2.font = 'bold 13px Inter, sans-serif';
+                    ctx2.fillText('▼', bar.x, bar.y - 8);
                     ctx2.restore();
                 }
             };
@@ -787,7 +791,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    devicePixelRatio: window.devicePixelRatio || 1,
+                    animation: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
