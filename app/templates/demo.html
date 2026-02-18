@@ -148,7 +148,7 @@
     <!-- Hero Section -->
     <section class="container mx-auto px-6 py-16">
         <div class="text-center max-w-4xl mx-auto">
-            <h1 class="text-5xl md:text-6xl font-bold mb-6">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                 <span class="gradient-text">프로덕션 레벨</span><br>
                 <span class="text-white">의료 AI 인퍼런스 백엔드 시스템</span>
             </h1>
@@ -170,7 +170,7 @@
 
     <!-- Stats Dashboard -->
     <section class="container mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <div class="stat-card card-glow rounded-xl p-6 cursor-pointer" onclick="showModal('totalRecords')">
                 <div class="text-gray-400 text-sm font-semibold mb-2">Total Records</div>
                 <div class="text-4xl font-bold gradient-text" id="totalRecords">1,000,000</div>
@@ -224,12 +224,136 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Risk Distribution -->
+            <!-- STEP 1: Simulation Form -->
+            <div class="bg-gray-900/50 card-glow rounded-xl p-8 border border-gray-800 lg:col-span-2">
+                <div class="mb-6">
+                    <div class="inline-block px-3 py-1 bg-jlk-purple/30 border border-jlk-purple/50 rounded-full text-xs font-semibold text-jlk-cyan mb-2">STEP 1</div>
+                    <h3 class="text-2xl font-bold text-white">나의 위험도를 먼저 파악하세요</h3>
+                    <p class="text-sm text-gray-400 mt-1">개인 건강 정보를 입력하고 심혈관 질환 위험도를 계산해보세요</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2">
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-400 mb-2">Age Group</label>
+                                <select id="simAge" class="w-full px-4 py-2 rounded-lg">
+                                    <option value="5">25-29세</option>
+                                    <option value="6">30-34세</option>
+                                    <option value="7">35-39세</option>
+                                    <option value="8">40-44세</option>
+                                    <option value="9">45-49세</option>
+                                    <option value="10" selected>50-54세</option>
+                                    <option value="11">55-59세</option>
+                                    <option value="12">60-64세</option>
+                                    <option value="13">65-69세</option>
+                                    <option value="14">70-74세</option>
+                                    <option value="15">75-79세</option>
+                                    <option value="16">80-84세</option>
+                                    <option value="17">85-89세</option>
+                                    <option value="18">90세 초과</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-400 mb-2">Gender</label>
+                                <select id="simGender" class="w-full px-4 py-2 rounded-lg">
+                                    <option value="1" selected>Male</option>
+                                    <option value="2">Female</option>
+                                </select>
+                            </div>
+
+
+
+                            <div>
+                                <div class="flex flex-wrap items-center justify-between mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Height (cm)</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium whitespace-nowrap">(140~200)</span>
+                                </div>
+                                <input type="number" id="simHeight" value="175" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Weight (kg)</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(30~150)</span>
+                                </div>
+                                <input type="number" id="simWeight" value="80" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Systolic BP</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(70~250)</span>
+                                </div>
+                                <input type="number" id="simSBP" value="145" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Diastolic BP</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(40~150)</span>
+                                </div>
+                                <input type="number" id="simDBP" value="95" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Fasting Glucose</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(50~400)</span>
+                                </div>
+                                <input type="number" id="simGlucose" value="110" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Total Cholesterol</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(100~400)</span>
+                                </div>
+                                <input type="number" id="simTC" value="250" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">Triglycerides</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(30~500)</span>
+                                </div>
+                                <input type="number" id="simTG" value="200" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <label class="text-sm font-semibold text-gray-400">HDL Cholesterol</label>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(20~100)</span>
+                                </div>
+                                <input type="number" id="simHDL" value="45" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-400 mb-2">Smoking Status</label>
+                                <select id="simSmoking" class="w-full px-4 py-2 rounded-lg">
+                                    <option value="never" selected>Never</option>
+                                    <option value="former">Former</option>
+                                    <option value="current">Current</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="simulateRisk()"
+                                    class="btn-primary w-full px-6 py-2 rounded-lg font-semibold">
+                                    위험도 계산
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-jlk-navy/50 rounded-lg p-6">
+                        <h4 class="text-lg font-bold text-white mb-4">Risk Assessment</h4>
+                        <div id="simResult" class="space-y-3">
+                            <div class="text-gray-500 text-sm text-center py-8">
+                                위험도 계산 버튼을 클릭하세요
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Risk Distribution -->
             <div class="bg-gray-900/50 card-glow rounded-xl p-8 border border-gray-800">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h3 class="text-2xl font-bold text-white">심혈관 질환 위험군 분포</h3>
-                        <p class="text-sm text-gray-400 mt-1">ATP III 프레임워크 기반 위험도 분류</p>
+                        <div class="inline-block px-3 py-1 bg-jlk-purple/30 border border-jlk-purple/50 rounded-full text-xs font-semibold text-jlk-cyan mb-2">STEP 2</div>
+                        <h3 class="text-2xl font-bold text-white">다른 사람들과 비교해보세요</h3>
+                        <p class="text-sm text-gray-400 mt-1">ATP III 프레임워크 기반 위험군 분포</p>
                     </div>
                     <button onclick="fetchRiskStats()" class="btn-primary px-6 py-2 rounded-lg text-sm font-semibold">
                         통계 조회
@@ -269,11 +393,10 @@
                 </div>
             </div>
 
-            <!-- Age Distribution -->
+            <!-- STEP 2: Age Distribution -->
             <div class="bg-gray-900/50 card-glow rounded-xl p-8 border border-gray-800">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h3 class="text-2xl font-bold text-white">연령대별 검진자 분포</h3>
                         <p class="text-sm text-gray-400 mt-1">5세 단위 연령대별 건강검진 데이터</p>
                     </div>
                     <button onclick="fetchAgeStats()" class="btn-primary px-6 py-2 rounded-lg text-sm font-semibold">
@@ -290,12 +413,13 @@
                 </div>
             </div>
 
-            <!-- Records Table -->
+            <!-- STEP 3: Records Table -->
             <div class="bg-gray-900/50 card-glow rounded-xl p-8 border border-gray-800 lg:col-span-2">
                 <div class="mb-6">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h3 class="text-2xl font-bold text-white">건강검진 레코드 조회</h3>
+                            <div class="inline-block px-3 py-1 bg-jlk-purple/30 border border-jlk-purple/50 rounded-full text-xs font-semibold text-jlk-cyan mb-2">STEP 3</div>
+                            <h3 class="text-2xl font-bold text-white">실제 데이터를 직접 확인하세요</h3>
                             <p class="text-sm text-gray-400 mt-1">
                                 Redis 캐싱 + MySQL 인덱싱 최적화
                                 <span id="queryTime" class="text-jlk-cyan font-semibold"></span>
@@ -404,125 +528,6 @@
                                 id="totalPages" class="text-white font-semibold">1</span></span>
                         <button onclick="nextPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition"
                             id="nextBtn">Next</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Risk Simulation -->
-            <div class="bg-gray-900/50 card-glow rounded-xl p-8 border border-gray-800 lg:col-span-2">
-                <h3 class="text-2xl font-bold text-white mb-6">심혈관 질환 위험도 시뮬레이션</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-2">
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Age Group</label>
-                                <select id="simAge" class="w-full px-4 py-2 rounded-lg">
-                                    <option value="5">25-29세</option>
-                                    <option value="6">30-34세</option>
-                                    <option value="7">35-39세</option>
-                                    <option value="8">40-44세</option>
-                                    <option value="9">45-49세</option>
-                                    <option value="10" selected>50-54세</option>
-                                    <option value="11">55-59세</option>
-                                    <option value="12">60-64세</option>
-                                    <option value="13">65-69세</option>
-                                    <option value="14">70-74세</option>
-                                    <option value="15">75-79세</option>
-                                    <option value="16">80-84세</option>
-                                    <option value="17">85-89세</option>
-                                    <option value="18">90세 초과</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Gender</label>
-                                <select id="simGender" class="w-full px-4 py-2 rounded-lg">
-                                    <option value="1" selected>Male</option>
-                                    <option value="2">Female</option>
-                                </select>
-                            </div>
-
-
-
-                            <div>
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <label class="text-sm font-semibold text-gray-400">Height (cm)</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(140~200)</span>
-                                </div>
-                                <input type="number" id="simHeight" value="175" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <label class="text-sm font-semibold text-gray-400">Weight (kg)</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(30~150)</span>
-                                </div>
-                                <input type="number" id="simWeight" value="80" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <label class="text-sm font-semibold text-gray-400">Systolic BP</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(70~250)</span>
-                                </div>
-                                <input type="number" id="simSBP" value="145" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <label class="text-sm font-semibold text-gray-400">Diastolic BP</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(40~150)</span>
-                                </div>
-                                <input type="number" id="simDBP" value="95" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <label class="text-sm font-semibold text-gray-400">Fasting Glucose</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(50~400)</span>
-                                </div>
-                                <input type="number" id="simGlucose" value="110" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <label class="text-sm font-semibold text-gray-400">Total Cholesterol</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(100~400)</span>
-                                </div>
-                                <input type="number" id="simTC" value="250" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <label class="text-sm font-semibold text-gray-400">Triglycerides</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(30~500)</span>
-                                </div>
-                                <input type="number" id="simTG" value="200" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <label class="text-sm font-semibold text-gray-400">HDL Cholesterol</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(20~100)</span>
-                                </div>
-                                <input type="number" id="simHDL" value="45" class="w-full px-4 py-2 rounded-lg">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-400 mb-2">Smoking Status</label>
-                                <select id="simSmoking" class="w-full px-4 py-2 rounded-lg">
-                                    <option value="never" selected>Never</option>
-                                    <option value="former">Former</option>
-                                    <option value="current">Current</option>
-                                </select>
-                            </div>
-                            <div class="flex items-end">
-                                <button onclick="simulateRisk()"
-                                    class="btn-primary w-full px-6 py-2 rounded-lg font-semibold">
-                                    위험도 계산
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-jlk-navy/50 rounded-lg p-6">
-                        <h4 class="text-lg font-bold text-white mb-4">Risk Assessment</h4>
-                        <div id="simResult" class="space-y-3">
-                            <div class="text-gray-500 text-sm text-center py-8">
-                                위험도 계산 버튼을 클릭하세요
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
