@@ -442,61 +442,77 @@
                             </div>
 
 
+
                             <div>
-                                <div class="flex justify-between mb-2">
+                                <div class="flex items-center space-x-2 mb-2">
                                     <label class="text-sm font-semibold text-gray-400">Height (cm)</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(140-200)</span>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(140~200)</span>
                                 </div>
-                                <input type="number" id="simHeight" value="175" class="w-full px-4 py-2 rounded-lg" placeholder="140-200">
+                                <input type="number" id="simHeight" value="175" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
-                                <div class="flex justify-between mb-2">
+                                <div class="flex items-center space-x-2 mb-2">
                                     <label class="text-sm font-semibold text-gray-400">Weight (kg)</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(30-150)</span>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(30~150)</span>
                                 </div>
-                                <input type="number" id="simWeight" value="80" class="w-full px-4 py-2 rounded-lg" placeholder="30-150">
+                                <input type="number" id="simWeight" value="80" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
-                                <div class="flex justify-between mb-2">
+                                <div class="flex items-center space-x-2 mb-2">
                                     <label class="text-sm font-semibold text-gray-400">Systolic BP</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(70-250)</span>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(70~250)</span>
                                 </div>
-                                <input type="number" id="simSBP" value="145" class="w-full px-4 py-2 rounded-lg" placeholder="70-250">
+                                <input type="number" id="simSBP" value="145" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
-                                <div class="flex justify-between mb-2">
+                                <div class="flex items-center space-x-2 mb-2">
                                     <label class="text-sm font-semibold text-gray-400">Diastolic BP</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(40-150)</span>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(40~150)</span>
                                 </div>
-                                <input type="number" id="simDBP" value="95" class="w-full px-4 py-2 rounded-lg" placeholder="40-150">
+                                <input type="number" id="simDBP" value="95" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
-                                <div class="flex justify-between mb-2">
+                                <div class="flex items-center space-x-2 mb-2">
                                     <label class="text-sm font-semibold text-gray-400">Fasting Glucose</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(50-400)</span>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(50~400)</span>
                                 </div>
-                                <input type="number" id="simGlucose" value="110" class="w-full px-4 py-2 rounded-lg" placeholder="50-400">
+                                <input type="number" id="simGlucose" value="110" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
-                                <div class="flex justify-between mb-2">
+                                <div class="flex items-center space-x-2 mb-2">
                                     <label class="text-sm font-semibold text-gray-400">Total Cholesterol</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(100-400)</span>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(100~400)</span>
                                 </div>
-                                <input type="number" id="simTC" value="250" class="w-full px-4 py-2 rounded-lg" placeholder="100-400">
+                                <input type="number" id="simTC" value="250" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
-                                <div class="flex justify-between mb-2">
+                                <div class="flex items-center space-x-2 mb-2">
                                     <label class="text-sm font-semibold text-gray-400">Triglycerides</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(30-500)</span>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(30~500)</span>
                                 </div>
-                                <input type="number" id="simTG" value="200" class="w-full px-4 py-2 rounded-lg" placeholder="30-500">
+                                <input type="number" id="simTG" value="200" class="w-full px-4 py-2 rounded-lg">
                             </div>
                             <div>
-                                <div class="flex justify-between mb-2">
+                                <div class="flex items-center space-x-2 mb-2">
                                     <label class="text-sm font-semibold text-gray-400">HDL Cholesterol</label>
-                                    <span class="text-[10px] text-jlk-cyan/60 self-end">(20-2000</span>
+                                    <span class="text-[10px] text-jlk-cyan/60 font-medium">(20~200)</span>
                                 </div>
-                                <input type="number" id="simHDL" value="45" class="w-full px-4 py-2 rounded-lg" placeholder="20-200">
+                                <input type="number" id="simHDL" value="45" class="w-full px-4 py-2 rounded-lg">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-400 mb-2">Smoking Status</label>
+                                <select id="simSmoking" class="w-full px-4 py-2 rounded-lg">
+                                    <option value="never" selected>Never</option>
+                                    <option value="former">Former</option>
+                                    <option value="current">Current</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="simulateRisk()"
+                                    class="btn-primary w-full px-6 py-2 rounded-lg font-semibold">
+                                    위험도 계산
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -958,7 +974,7 @@
 
                 const explanations = res.result.explanations || [];
 
-                /* 수정 후 (simulateRisk 함수 내부의 explanations 처리 로직) */
+                /* 수정 후 */
                 result.innerHTML = `
                     <div class="text-center mb-6">
                         <div class="text-3xl font-bold ${getRiskGroupTextColor(res.result.risk_group)} mb-2">
@@ -969,33 +985,33 @@
                         </div>
                     </div>
                     <div class="space-y-3">
-                        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Detected Risk Factors (${res.result.risk_factor_count}/7)
                         </div>
                         <div class="grid grid-cols-1 gap-2">
                             ${explanations.map(exp => {
-                        // ':' 기준으로 타이틀과 수치 분리 (가독성 향상)
-                        const [title, details] = exp.split(':');
-                        return `
+                                    const [title, details] = exp.split(':');
+                                    return `
                                     <div class="flex flex-col p-3 bg-red-500/10 border border-red-500/20 rounded-xl hover:bg-red-500/15 transition group">
                                         <div class="flex items-center justify-between mb-1">
-                                            <span class="text-red-400 font-bold text-xs uppercase">${title}</span>
+                                            <span class="text-red-400 font-bold text-[11px] uppercase">${title}</span>
                                             <div class="w-1.5 h-1.5 bg-red-500 rounded-full group-hover:animate-pulse"></div>
                                         </div>
-                                        <div class="text-gray-300 text-sm leading-snug">
+                                        <div class="text-gray-200 text-sm leading-snug font-medium">
                                             ${details || ''}
                                         </div>
                                     </div>
                                 `;
-                    }).join('')}
+                                }).join('')}
                         </div>
                         ${explanations.length === 0 ? `
                             <div class="text-center py-6 bg-green-500/5 border border-green-500/20 rounded-xl">
-                                <span class="text-green-400 text-sm italic">No risk factors detected</span>
+                                <span class="text-green-400 text-sm italic font-medium">No risk factors detected</span>
                             </div>
                         ` : ''}
                     </div>
                 `;
+                
             } catch (error) {
                 result.innerHTML = '<div class="text-red-400 text-sm">Simulation failed</div>';
             }
