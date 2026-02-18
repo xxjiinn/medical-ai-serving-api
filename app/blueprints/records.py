@@ -21,13 +21,15 @@ def get_records():
     Query Parameters:
         - page: 페이지 번호 (default: 1)
         - limit: 페이지당 항목 수 (default: 20, max: 100)
-        - age_group: 연령대 필터 (9~18)
+        - age_group: 연령대 필터 (5~18)
+        - gender: 성별 필터 (1: 남성, 2: 여성)
         - risk_group: 위험군 필터
     """
     # 파라미터
     page = request.args.get('page', 1, type=int)
     limit = request.args.get('limit', 20, type=int)
     age_group = request.args.get('age_group', type=int)
+    gender = request.args.get('gender', type=int)
     risk_group = request.args.get('risk_group', type=str)
 
     # 검증
@@ -45,6 +47,8 @@ def get_records():
         # 필터 적용
         if age_group:
             query = query.filter(RawHealthCheck.age_group_code == age_group)
+        if gender:
+            query = query.filter(RawHealthCheck.gender_code == gender)
         if risk_group:
             query = query.filter(CleanRiskResult.risk_group == risk_group)
 

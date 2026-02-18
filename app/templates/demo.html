@@ -570,8 +570,8 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: '#E5E7EB',
-                                font: { size: 13, weight: '500' },
+                                color: '#F3F4F6',
+                                font: { size: 13, weight: '600' },
                                 padding: 20,
                                 generateLabels: function(chart) {
                                     const data = chart.data;
@@ -694,12 +694,16 @@
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            borderColor: 'rgba(255, 255, 255, 0.3)',
-                            borderWidth: 1,
-                            padding: 12,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#F1F5F9',
+                            bodyColor: '#E2E8F0',
+                            borderColor: 'rgba(59, 130, 246, 0.5)',
+                            borderWidth: 2,
+                            padding: 16,
+                            displayColors: false,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            bodySpacing: 6,
                             callbacks: {
                                 title: function(context) {
                                     return context[0].label;
@@ -754,47 +758,39 @@
             const startTime = performance.now();
 
             try {
-                // Fetch more data if filters are applied to ensure we get enough results
-                const hasFilters = filterAge || filterGender || filterRisk;
-                const fetchLimit = hasFilters ? limit * 10 : limit; // Fetch 10x more to filter from
-
-                let url = `${API_BASE}/records?limit=${fetchLimit}&page=${page}`;
+                // Build URL with filters
+                let url = `${API_BASE}/records?limit=${limit}&page=${page}`;
+                if (filterAge) url += `&age_group=${filterAge}`;
+                if (filterGender) url += `&gender=${filterGender}`;
+                if (filterRisk) url += `&risk_group=${filterRisk}`;
 
                 const response = await fetch(url, {
                     headers: { 'X-API-Key': API_KEY }
                 });
                 const data = await response.json();
+
+                if (data.error) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-red-400">${data.message || 'Failed to load records'}</td></tr>`;
+                    return;
+                }
+
                 const endTime = performance.now();
                 const queryTime = (endTime - startTime).toFixed(0);
 
-                // Show query time (demonstrates caching/indexing benefit)
+                // Show query time
                 const cacheStatus = data.cached ? ' ✓ Redis Cache' : ' ⚡ MySQL Query';
                 const cacheColor = data.cached ? 'text-green-400' : 'text-blue-400';
                 document.getElementById('queryTime').innerHTML = `(<span class="${cacheColor}">${queryTime}ms${cacheStatus}</span>)`;
 
                 tbody.innerHTML = '';
 
-                // Apply client-side filtering for demo
-                // NOTE: In production, filtering would be server-side with proper SQL WHERE clauses
-                let filteredData = data.data;
-                if (filterAge) {
-                    filteredData = filteredData.filter(r => r.age_group == filterAge);
-                }
-                if (filterGender) {
-                    filteredData = filteredData.filter(r => r.gender == filterGender);
-                }
-                if (filterRisk) {
-                    filteredData = filteredData.filter(r => r.risk_group === filterRisk);
-                }
-
-                // Apply limit AFTER filtering (production behavior)
-                filteredData = filteredData.slice(0, limit);
-
-                if (filteredData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-gray-500">No records found with selected filters</td></tr>';
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-gray-500">No records found</td></tr>';
                     document.getElementById('recordPagination').classList.add('hidden');
                     return;
                 }
+
+                const filteredData = data.data;
 
                 filteredData.forEach((record, index) => {
                     const row = document.createElement('tr');
