@@ -247,21 +247,24 @@ def process_all_records():
             if not raw_batch:
                 break
 
-            # Batch 처리
+            # Batch 처리 (유효한 레코드만 저장)
             clean_batch = []
             for raw_data in raw_batch:
                 clean_result = process_single_record(raw_data)
-                clean_batch.append(clean_result)
 
                 total_rows += 1
                 if clean_result.invalid_flag:
                     invalid_rows += 1
+                    # ❌ Invalid records는 저장하지 않음
                 else:
                     valid_rows += 1
+                    # ✅ Valid records만 저장
+                    clean_batch.append(clean_result)
 
-            # DB에 저장
-            db.bulk_save_objects(clean_batch)
-            db.commit()
+            # DB에 저장 (유효한 레코드만)
+            if clean_batch:
+                db.bulk_save_objects(clean_batch)
+                db.commit()
 
             batch_time = time.time() - batch_start
             throughput = len(raw_batch) / batch_time if batch_time > 0 else 0
@@ -287,33 +290,27 @@ def process_all_records():
 
 
 def verify_results():
-    """결과 검증"""
+    """결과 검증 (유효한 레코드만 저장됨)"""
     db = SessionLocal()
 
     try:
-        # 통계 조회
+        # 통계 조회 (모두 유효한 레코드)
         total = db.query(CleanRiskResult).count()
-        valid = db.query(CleanRiskResult).filter_by(invalid_flag=False).count()
-        invalid = db.query(CleanRiskResult).filter_by(invalid_flag=True).count()
 
         print(f"🔍 Verification:")
-        print(f"   Total:   {total:,} rows")
-        print(f"   Valid:   {valid:,} rows")
-        print(f"   Invalid: {invalid:,} rows\n")
+        print(f"   Total valid records: {total:,} rows")
+        print(f"   (Invalid records were not saved)\n")
 
         # Risk Group 분포
         print(f"📊 Risk Group Distribution:")
         for group in ['ZERO_TO_ONE_RISK_FACTOR', 'MULTIPLE_RISK_FACTORS', 'CHD_RISK_EQUIVALENT']:
-            count = db.query(CleanRiskResult).filter_by(
-                risk_group=group,
-                invalid_flag=False
-            ).count()
-            pct = count / valid * 100 if valid > 0 else 0
+            count = db.query(CleanRiskResult).filter_by(risk_group=group).count()
+            pct = count / total * 100 if total > 0 else 0
             print(f"   {group:30s}: {count:6,} ({pct:5.1f}%)")
 
         # 샘플 데이터
         print(f"\n📋 Sample Results:")
-        samples = db.query(CleanRiskResult).filter_by(invalid_flag=False).limit(3).all()
+        samples = db.query(CleanRiskResult).limit(3).all()
         for sample in samples:
             print(f"   ID {sample.id}: count={sample.risk_factor_count}, "
                   f"group={sample.risk_group}, bmi={sample.bmi}")

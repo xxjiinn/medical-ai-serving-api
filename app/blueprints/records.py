@@ -39,10 +39,8 @@ def get_records():
     db = SessionLocal()
 
     try:
-        # 쿼리 빌드
-        query = db.query(CleanRiskResult).join(RawHealthCheck).filter(
-            CleanRiskResult.invalid_flag == False
-        )
+        # 쿼리 빌드 (모든 레코드가 유효함)
+        query = db.query(CleanRiskResult).join(RawHealthCheck)
 
         # 필터 적용
         if age_group:
