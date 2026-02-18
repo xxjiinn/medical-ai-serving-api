@@ -95,6 +95,10 @@
             border-color: #3B82F6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
+        .row-highlight:hover {
+        background-color: rgba(59, 130, 246, 0.1) !important;
+        border-left: 4px solid #3B82F6;
+    }
     </style>
 </head>
 <body class="text-white">
@@ -281,8 +285,7 @@
                                 <span id="totalFilteredCount" class="text-white font-bold">0</span>
                             </div>
                             <p class="text-xs text-gray-500 mt-1">
-                                💡 전체 100만 레코드 중 유효한 데이터만 표시 (invalid_flag=False)<br>
-                                첫 유효 레코드: ID #657,409 (이전 레코드들은 필수 필드 누락/생물학적 범위 초과)
+                                💡 전체 100만 레코드 중 유효한 데이터만 표시 <br> 필수 필드 누락/생물학적 범위 초과 레코드 제외
                             </p>
                         </div>
                     </div>
@@ -813,15 +816,16 @@
 
                 const filteredData = data.data;
 
+                /* 수정 후 (fetchRecords 함수 내부의 row 생성 로직) */
                 filteredData.forEach((record, index) => {
                     const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-800/50 transition';
+                    // 클릭 가능함을 알리는 스타일 추가
+                    row.className = 'hover:bg-gray-800/80 transition cursor-pointer group row-highlight';
+                    // 클릭 시 상세 모달을 띄우는 함수 호출 (레코드 데이터를 인자로 전달)
+                    row.onclick = () => showRiskDetailModal(record);
 
-                    // Get flags from record
                     const flags = record.flags || {};
                     const sbp = flags.hypertension ? '140+' : '<140';
-
-                    // Row number starts from 1
                     const rowNumber = (page - 1) * limit + index + 1;
 
                     row.innerHTML = `
@@ -830,23 +834,17 @@
                         <td class="px-4 py-3 text-sm">
                             <span class="px-2 py-1 bg-gray-800 rounded text-xs">${getAgeDisplay(record.age_group)}</span>
                         </td>
+                        <td class="px-4 py-3 text-sm">${record.gender === 1 ? 'Male' : 'Female'}</td>
                         <td class="px-4 py-3 text-sm">
-                            ${record.gender === 1 ? '👨 Male' : '👩 Female'}
+                            <span class="${record.bmi >= 25 ? 'text-red-400' : 'text-green-400'} font-semibold">${record.bmi}</span>
                         </td>
-                        <td class="px-4 py-3 text-sm">
-                            <span class="${record.bmi >= 25 ? 'text-red-400' : 'text-green-400'} font-semibold">
-                                ${record.bmi}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-400">
-                            ${sbp}/${flags.hypertension ? '90+' : '<90'}
-                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-400">${sbp}/${flags.hypertension ? '90+' : '<90'}</td>
                         <td class="px-4 py-3 text-sm">
                             <div class="flex items-center space-x-2">
-                                <span class="px-2 py-1 bg-jlk-purple/20 text-jlk-cyan rounded text-xs font-semibold">
+                                <span class="px-2 py-1 bg-jlk-purple/20 text-jlk-cyan rounded text-xs font-semibold group-hover:bg-jlk-cyan group-hover:text-white transition">
                                     ${record.risk_factor_count}/7
                                 </span>
-                                ${record.risk_factor_count > 0 ? '<span class="text-xs text-gray-500">factors</span>' : ''}
+                                <span class="text-xs text-gray-500 italic">click to view</span>
                             </div>
                         </td>
                         <td class="px-4 py-3 text-sm">
@@ -1263,6 +1261,56 @@
         setInterval(checkAPIHealth, 30000);
 
         // Stats will be loaded when user clicks the button
+
+
+        /* 추가할 부분 (Script 섹션 하단) */
+            function showRiskDetailModal(record) {
+                const modal = document.getElementById('modal');
+                const title = document.getElementById('modalTitle');
+                const content = document.getElementById('modalContent');
+
+                title.textContent = `Record #${record.id} Risk Analysis`;
+
+                // 위험 요인 매핑 (API 응답의 flags 키값 기준)
+                const factorLabels = {
+                    hypertension: '고혈압 (Hypertension)',
+                    diabetes: '당뇨 (Diabetes)',
+                    high_tc: '고콜레스테롤 (High TC)',
+                    high_tg: '고중성지방 (High TG)',
+                    low_hdl: '저HDL 콜레스테롤 (Low HDL)',
+                    obesity: '비만 (Obesity)',
+                    smoking: '흡연 (Smoking)'
+                };
+
+                let factorsHtml = '<div class="space-y-4">';
+                factorsHtml += `<div class="p-4 bg-jlk-navy/50 rounded-lg border border-jlk-purple/30 mb-4">
+                        <p class="text-sm text-gray-400">검진 정보: ${getAgeDisplay(record.age_group)} / ${record.gender === 1 ? '남성' : '여성'} / BMI ${record.bmi}</p>
+                    </div>`;
+                factorsHtml += '<h4 class="font-bold text-white mb-2">검출된 위험 요인:</h4>';
+
+                let foundAny = false;
+                Object.entries(record.flags).forEach(([key, value]) => {
+                    if (value && factorLabels[key]) {
+                        foundAny = true;
+                        factorsHtml += `
+                <div class="flex items-center space-x-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <span class="text-gray-200 text-sm font-medium">${factorLabels[key]}</span>
+                </div>
+            `;
+                    }
+                });
+
+                if (!foundAny) {
+                    factorsHtml += '<p class="text-gray-500 italic">검출된 위험 요인이 없습니다. (Clean Record)</p>';
+                }
+
+                factorsHtml += '</div>';
+
+                content.innerHTML = factorsHtml;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
     </script>
 </body>
 </html>
