@@ -362,8 +362,9 @@
                 <div class="bg-jlk-navy/50 rounded-lg p-6 mb-4">
                     <canvas id="riskChart" height="280"></canvas>
                 </div>
+                <div id="userRiskBanner" class="hidden mb-4 px-4 py-3 rounded-lg border-2 text-sm font-bold flex items-center justify-center space-x-2"></div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                    <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                    <div id="riskCard-low" class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 transition-all duration-300">
                         <div class="flex items-center space-x-2 mb-2">
                             <div class="w-3 h-3 bg-green-500 rounded-full"></div>
                             <div class="font-semibold text-green-400">저위험군</div>
@@ -371,7 +372,7 @@
                         <div class="text-xs text-gray-400">위험요인 0-1개</div>
                         <div class="text-xs text-gray-200 mt-1">정기 검진 권장</div>
                     </div>
-                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                    <div id="riskCard-multi" class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 transition-all duration-300">
                         <div class="flex items-center space-x-2 mb-2">
                             <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
                             <div class="font-semibold text-yellow-400">중등도 위험군</div>
@@ -379,7 +380,7 @@
                         <div class="text-xs text-gray-400">위험요인 2개 이상</div>
                         <div class="text-xs text-gray-200 mt-1">생활습관 개선 필요</div>
                     </div>
-                    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                    <div id="riskCard-high" class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 transition-all duration-300">
                         <div class="flex items-center space-x-2 mb-2">
                             <div class="w-3 h-3 bg-red-500 rounded-full"></div>
                             <div class="font-semibold text-red-400">고위험군</div>
@@ -634,40 +635,19 @@
                             userRiskIndex === 1 ? 'rgba(251, 191, 36, 1)' : 'rgba(251, 191, 36, 1)',
                             userRiskIndex === 2 ? 'rgba(239, 68, 68, 1)' : 'rgba(239, 68, 68, 1)'
                         ],
-                        borderWidth: userRiskIndex >= 0 ? [userRiskIndex === 0 ? 6 : 3, userRiskIndex === 1 ? 6 : 3, userRiskIndex === 2 ? 6 : 3] : 3
+                        borderWidth: userRiskIndex >= 0
+                            ? [userRiskIndex === 0 ? 8 : 2, userRiskIndex === 1 ? 8 : 2, userRiskIndex === 2 ? 8 : 2]
+                            : 2,
+                        offset: userRiskIndex >= 0
+                            ? [userRiskIndex === 0 ? 12 : 0, userRiskIndex === 1 ? 12 : 0, userRiskIndex === 2 ? 12 : 0]
+                            : 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                            labels: {
-                                color: '#E5E7EB',
-                                font: { size: 12, weight: '500' },
-                                padding: 20,
-                                usePointStyle: true,
-                                generateLabels: function (chart) {
-                                    const data = chart.data;
-                                    return data.labels.map((label, i) => {
-                                        const value = data.datasets[0].data[i];
-                                        const count = i === 0 ? lowCount : i === 1 ? multiCount : highCount;
-                                        const youMarker = userRiskIndex === i ? ' ← 당신' : '';
-                                        return {
-                                            text: `${label}: ${value}% (${count.toLocaleString()}명)${youMarker}`,
-                                            fillStyle: data.datasets[0].backgroundColor[i],
-                                            strokeStyle: data.datasets[0].borderColor[i],
-                                            lineWidth: 2,
-                                            hidden: false,
-                                            index: i,
-                                            fontColor: userRiskIndex === i ? '#fbbf24' : '#E5E7EB'
-                                        };
-                                    });
-                                }
-                            }
-                        },
+                        legend: { display: false },
                         tooltip: {
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
                             titleColor: '#fff',
@@ -761,6 +741,27 @@
             const container = document.getElementById('ageChartContainer');
             container.style.height = '280px';
 
+            // Inline plugin: draw "▼ 내 위치" above user's bar
+            const ageMarkerPlugin = {
+                id: 'ageMarker',
+                afterDraw(chart) {
+                    if (!lastSimulationResult) return;
+                    const ag = lastSimulationResult.age_group;
+                    const userLabel = ag === 18 ? '90세 초과' : `${ag * 5}-${ag * 5 + 4}세`;
+                    const idx = chart.data.labels.indexOf(userLabel);
+                    if (idx === -1) return;
+                    const bar = chart.getDatasetMeta(0).data[idx];
+                    if (!bar) return;
+                    const ctx2 = chart.ctx;
+                    ctx2.save();
+                    ctx2.fillStyle = '#fbbf24';
+                    ctx2.font = 'bold 11px Inter, sans-serif';
+                    ctx2.textAlign = 'center';
+                    ctx2.fillText('▼ 내 위치', bar.x, bar.y - 8);
+                    ctx2.restore();
+                }
+            };
+
             ageChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -774,6 +775,7 @@
                         avgRisk: avgRiskData // Store for tooltip
                     }]
                 },
+                plugins: [ageMarkerPlugin],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -827,6 +829,55 @@
                     }
                 }
             });
+        }
+
+        // Highlight user position on charts after simulation
+        function highlightUserPosition() {
+            if (!lastSimulationResult) return;
+
+            // --- Risk Chart: banner + card highlight ---
+            const riskGroupMap = {
+                'ZERO_TO_ONE_RISK_FACTOR': { id: 'riskCard-low', label: '저위험군', color: 'border-green-400 text-green-400 bg-green-500/10' },
+                'MULTIPLE_RISK_FACTORS':   { id: 'riskCard-multi', label: '중등도 위험군', color: 'border-yellow-400 text-yellow-400 bg-yellow-500/10' },
+                'CHD_RISK_EQUIVALENT':     { id: 'riskCard-high', label: '고위험군', color: 'border-red-400 text-red-400 bg-red-500/10' }
+            };
+            const allCardIds = ['riskCard-low', 'riskCard-multi', 'riskCard-high'];
+
+            // Reset all cards
+            allCardIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.style.boxShadow = '';
+                el.style.transform = '';
+                const badge = el.querySelector('.my-position-badge');
+                if (badge) badge.remove();
+            });
+
+            // Highlight user's card
+            const info = riskGroupMap[lastSimulationResult.risk_group];
+            if (info) {
+                const card = document.getElementById(info.id);
+                if (card) {
+                    card.style.boxShadow = '0 0 20px rgba(255,255,255,0.25)';
+                    card.style.transform = 'scale(1.04)';
+                    const badge = document.createElement('div');
+                    badge.className = 'my-position-badge mt-2 text-center text-xs font-bold text-white bg-white/20 rounded px-2 py-0.5';
+                    badge.textContent = '▶ 내 위치';
+                    card.appendChild(badge);
+                }
+
+                // Banner
+                const banner = document.getElementById('userRiskBanner');
+                if (banner) {
+                    banner.className = `mb-4 px-4 py-3 rounded-lg border-2 text-sm font-bold flex items-center justify-center space-x-2 ${info.color}`;
+                    banner.innerHTML = `<span>▶</span><span>내 위험군: ${info.label}</span>`;
+                    banner.classList.remove('hidden');
+                }
+            }
+
+            // --- Age Chart: redraw triggers afterDraw plugin ---
+            if (ageChart) ageChart.update();
+            if (riskChart) riskChart.update();
         }
 
         // Fetch Records with Filters
@@ -995,6 +1046,7 @@
                     risk_group: res.result.risk_group,
                     age_group: data.age_group
                 };
+                highlightUserPosition();
 
                 const explanations = res.result.explanations || [];
 
@@ -1262,29 +1314,63 @@
                 responseTime: {
                     title: 'Response Time',
                     content: `
-                        <div class="space-y-3">
-                            <div class="bg-jlk-navy/50 rounded-lg p-4">
-                                <h4 class="text-base font-semibold text-white mb-2">⚡ Average: 4ms</h4>
-                                <p class="text-xs text-gray-400">Redis cache + MySQL indexing optimization</p>
+                        <div class="space-y-4">
+                            <div class="bg-jlk-navy/50 rounded-lg p-5">
+                                <h4 class="text-lg font-semibold text-white mb-3">⚡ API 응답 시간 최적화</h4>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div class="bg-black/30 rounded-lg p-3 text-center">
+                                        <div class="text-jlk-coral text-2xl font-bold">4ms</div>
+                                        <div class="text-xs text-gray-500 mt-1">평균 응답</div>
+                                    </div>
+                                    <div class="bg-black/30 rounded-lg p-3 text-center">
+                                        <div class="text-green-400 text-2xl font-bold">2ms</div>
+                                        <div class="text-xs text-gray-500 mt-1">최소 응답</div>
+                                    </div>
+                                    <div class="bg-black/30 rounded-lg p-3 text-center">
+                                        <div class="text-yellow-400 text-2xl font-bold">8ms</div>
+                                        <div class="text-xs text-gray-500 mt-1">최대 응답</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="bg-jlk-navy/50 rounded-lg p-4">
-                                <h4 class="text-base font-semibold text-white mb-2">📈 Endpoint Performance</h4>
-                                <div class="space-y-2 text-xs">
-                                    <div class="flex justify-between">
-                                        <span>GET /stats/risk</span>
-                                        <span class="text-jlk-cyan font-bold">4ms</span>
+                            <div class="bg-jlk-navy/50 rounded-lg p-5">
+                                <h4 class="text-base font-semibold text-white mb-3">📈 엔드포인트별 성능</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between items-center p-2 bg-black/30 rounded">
+                                        <span class="text-white font-medium">GET /stats/risk</span>
+                                        <span class="text-jlk-cyan font-bold">4ms (캐시)</span>
                                     </div>
-                                    <div class="flex justify-between">
-                                        <span>GET /stats/age</span>
-                                        <span class="text-jlk-cyan font-bold">4ms</span>
+                                    <div class="flex justify-between items-center p-2 bg-black/30 rounded">
+                                        <span class="text-white font-medium">GET /stats/age</span>
+                                        <span class="text-jlk-cyan font-bold">4ms (캐시)</span>
                                     </div>
-                                    <div class="flex justify-between">
-                                        <span>POST /simulate</span>
+                                    <div class="flex justify-between items-center p-2 bg-black/30 rounded">
+                                        <span class="text-white font-medium">POST /simulate</span>
                                         <span class="text-green-400 font-bold">&lt;1ms</span>
                                     </div>
-                                    <div class="flex justify-between">
-                                        <span>GET /records</span>
+                                    <div class="flex justify-between items-center p-2 bg-black/30 rounded">
+                                        <span class="text-white font-medium">GET /records</span>
                                         <span class="text-yellow-400 font-bold">50-80ms</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-jlk-navy/50 rounded-lg p-5">
+                                <h4 class="text-base font-semibold text-white mb-2">🚀 배포 스펙</h4>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div class="bg-black/30 rounded p-2">
+                                        <div class="text-gray-500 text-xs">Workers</div>
+                                        <div class="text-white font-semibold">2 workers × 2 threads</div>
+                                    </div>
+                                    <div class="bg-black/30 rounded p-2">
+                                        <div class="text-gray-500 text-xs">Platform</div>
+                                        <div class="text-white font-semibold">Railway (Singapore)</div>
+                                    </div>
+                                    <div class="bg-black/30 rounded p-2">
+                                        <div class="text-gray-500 text-xs">Database</div>
+                                        <div class="text-white font-semibold">MySQL Private Network</div>
+                                    </div>
+                                    <div class="bg-black/30 rounded p-2">
+                                        <div class="text-gray-500 text-xs">Cache</div>
+                                        <div class="text-white font-semibold">Redis In-Memory</div>
                                     </div>
                                 </div>
                             </div>
