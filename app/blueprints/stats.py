@@ -93,9 +93,16 @@ def get_age_stats():
         # 응답 생성
         age_distribution = []
         for row in query:
+            # Age display 포맷팅 (age_group 5-18: 25-29세 ~ 90세 초과)
+            if row.age_group_code == 18:
+                age_display = '90세 초과'
+            else:
+                age_start = row.age_group_code * 5
+                age_display = f'{age_start}-{age_start + 4}세'
+
             age_distribution.append({
                 'age_group': row.age_group_code,
-                'age_display': f'{row.age_group_code * 5}세',
+                'age_display': age_display,
                 'count': row.count,
                 'percentage': round(row.count / total * 100, 1) if total > 0 else 0,
                 'avg_risk_factor_count': round(row.avg_risk_count, 1) if row.avg_risk_count else 0,

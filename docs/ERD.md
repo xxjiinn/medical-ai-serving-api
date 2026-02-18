@@ -93,7 +93,7 @@ CREATE TABLE raw_health_check (
 | subscriber_id       | VARCHAR(20)     | ✅   | 가입자 ID (비식별화) | Surrogate key |
 | province_code       | TINYINT         | ✅   | 시도 코드            | 11~50         |
 | gender_code         | TINYINT         | ❌   | 1=남, 2=여           |               |
-| age_group_code      | TINYINT         | ❌   | 9~18 (45세~90세+)    |               |
+| age_group_code      | TINYINT         | ❌   | 5~18 (25-29세~90세+) |               |
 | height              | SMALLINT        | ✅   | 신장 (cm)            | 5cm 단위      |
 | weight              | SMALLINT        | ✅   | 체중 (kg)            | 5kg 단위      |
 | waist_circumference | SMALLINT        | ✅   | 허리둘레 (cm)        |               |

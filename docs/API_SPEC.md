@@ -1,7 +1,7 @@
 # API 명세서 (API Specification)
 
 작성일: 2026-02-17
-Base URL: `http://localhost:5000` (로컬), `https://[railway-domain]` (배포)
+Base URL: `http://localhost:5001` (로컬), `https://[railway-domain]` (배포)
 
 ---
 
@@ -10,7 +10,7 @@ Base URL: `http://localhost:5000` (로컬), `https://[railway-domain]` (배포)
 모든 API 요청은 `X-API-KEY` 헤더 필요
 
 ```bash
-curl -H "X-API-KEY: your-secret-key" http://localhost:5000/records
+curl -H "X-API-KEY: your-secret-key" http://localhost:5001/records
 ```
 
 **응답 (인증 실패)**:
@@ -35,7 +35,8 @@ curl -H "X-API-KEY: your-secret-key" http://localhost:5000/records
 |----------|------|------|--------|------|
 | page | int | ❌ | 1 | 페이지 번호 (1부터 시작) |
 | limit | int | ❌ | 20 | 페이지당 항목 수 (최대 100) |
-| age_group | int | ❌ | - | 연령대 필터 (9~18) |
+| age_group | int | ❌ | - | 연령대 필터 (5~18, 25-29세~90세 초과) |
+| gender | int | ❌ | - | 성별 필터 (1: 남성, 2: 여성) |
 | risk_group | string | ❌ | - | 위험군 필터 (CHD_RISK_EQUIVALENT, MULTIPLE_RISK_FACTORS, ZERO_TO_ONE_RISK_FACTOR) |
 
 ### 요청 예시
@@ -139,7 +140,7 @@ GET /records/123
 {
   "id": 123,
   "age_group": 12,
-  "age_display": "60세",
+  "age_display": "60-64세",
   "gender": 1,
   "gender_display": "남성",
   "height": 170,
@@ -210,39 +211,36 @@ GET /stats/risk
 {
   "risk_distribution": {
     "ZERO_TO_ONE_RISK_FACTOR": {
-      "count": 145230,
-      "percentage": 55.9
+      "count": 218365,
+      "percentage": 64.1
     },
     "MULTIPLE_RISK_FACTORS": {
-      "count": 84210,
-      "percentage": 32.4
+      "count": 91280,
+      "percentage": 26.8
     },
     "CHD_RISK_EQUIVALENT": {
-      "count": 30450,
-      "percentage": 11.7
+      "count": 31041,
+      "percentage": 9.1
     }
   },
-  "total_records": 259890,
-  "valid_records": 259890,
-  "invalid_records": 40110,
-  "cached": true,
-  "generated_at": "2026-02-17T10:00:00Z"
+  "total_records": 1000000,
+  "valid_records": 340686,
+  "invalid_records": 659314
 }
 ```
 
 **HTTP 상태**: 200 OK
 
 **캐싱**:
-- TTL: 1시간
+- TTL: 60초
 - Redis Key: `stats:risk`
-- `cached: true` 표시
 
 ---
 
 ## 4. GET /stats/age
 
 ### 설명
-연령대별 통계 (캐시 적용)
+연령대별 통계 (캐시 적용). clean_risk_result의 유효한 레코드만 포함.
 
 ### Query Parameters
 없음
@@ -259,41 +257,46 @@ GET /stats/age
 {
   "age_distribution": [
     {
-      "age_group": 9,
-      "age_display": "45세",
-      "count": 18450,
-      "percentage": 7.1,
-      "avg_risk_factor_count": 1.2,
-      "high_risk_count": 1234
+      "age_group": 5,
+      "age_display": "25-29세",
+      "count": 5906,
+      "percentage": 1.7,
+      "avg_risk_factor_count": 1.1,
+      "high_risk_count": 412
     },
     {
-      "age_group": 10,
-      "age_display": "50세",
-      "count": 24120,
-      "percentage": 9.3,
-      "avg_risk_factor_count": 1.5,
-      "high_risk_count": 2456
+      "age_group": 9,
+      "age_display": "45-49세",
+      "count": 58677,
+      "percentage": 17.2,
+      "avg_risk_factor_count": 1.8,
+      "high_risk_count": 4521
     },
     {
       "age_group": 12,
-      "age_display": "60세",
-      "count": 35670,
-      "percentage": 13.7,
+      "age_display": "60-64세",
+      "count": 34312,
+      "percentage": 10.1,
       "avg_risk_factor_count": 2.3,
       "high_risk_count": 5678
+    },
+    {
+      "age_group": 18,
+      "age_display": "90세 초과",
+      "count": 2292,
+      "percentage": 0.7,
+      "avg_risk_factor_count": 2.8,
+      "high_risk_count": 891
     }
-    // ... 나머지 연령대
   ],
-  "total_records": 259890,
-  "cached": true,
-  "generated_at": "2026-02-17T10:00:00Z"
+  "total_records": 340686
 }
 ```
 
 **HTTP 상태**: 200 OK
 
 **캐싱**:
-- TTL: 1시간
+- TTL: 60초
 - Redis Key: `stats:age`
 
 ---
@@ -307,7 +310,7 @@ GET /stats/age
 
 | 필드 | 타입 | 필수 | 설명 | 범위 |
 |------|------|------|------|------|
-| age_group | int | ✅ | 연령대 코드 | 9~18 |
+| age_group | int | ✅ | 연령대 코드 (5=25-29세, ..., 18=90세 초과) | 5~18 |
 | gender | int | ✅ | 성별 | 1 (남), 2 (여) |
 | height | int | ✅ | 신장 (cm) | 140~200 |
 | weight | int | ✅ | 체중 (kg) | 30~150 |
@@ -347,7 +350,7 @@ X-API-KEY: your-secret-key
 {
   "input": {
     "age_group": 12,
-    "age_display": "60세",
+    "age_display": "60-64세",
     "gender": 1,
     "gender_display": "남성",
     "bmi": 29.4
@@ -507,7 +510,7 @@ X-Response-Time: 24ms
 ```bash
 # 환경변수 설정
 export API_KEY="your-secret-key"
-export BASE_URL="http://localhost:5000"
+export BASE_URL="http://localhost:5001"
 
 # 1. 목록 조회
 curl -H "X-API-KEY: $API_KEY" "$BASE_URL/records?page=1&limit=5"

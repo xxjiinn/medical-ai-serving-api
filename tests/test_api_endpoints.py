@@ -177,7 +177,7 @@ class TestSimulateEndpoint:
     def test_simulate_invalid_range(self, client, auth_headers):
         """POST /simulate - 범위 초과 값"""
         invalid_data = {
-            'age_group': 25,  # 9~18만 허용
+            'age_group': 25,  # 5~18만 허용
             'gender': 1,
             'height': 170,
             'weight': 80,

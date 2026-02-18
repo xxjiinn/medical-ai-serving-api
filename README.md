@@ -94,17 +94,17 @@
 
 ## 🛠️ 기술 스택
 
-| 계층 | 기술 | 버전 | 선택 이유 |
-|------|------|------|-----------|
-| **Framework** | Flask | 3.0.0 | 경량, 빠른 개발, RESTful API 최적 |
-| **WSGI Server** | Gunicorn | 21.2.0 | 멀티 프로세스, 프로덕션 안정성 |
-| **Database** | MySQL | 8.0 | ACID 보장, 관계형 데이터 적합 |
-| **Cache** | Redis | 8.6.0 | 초고속 캐싱, TTL 지원 |
-| **ORM** | SQLAlchemy | 2.0.25+ | 타입 안전, 마이그레이션 용이 |
-| **ETL** | pandas | 2.2.0 | 대용량 데이터 처리 최적화 |
-| **Testing** | pytest | 7.4.4 | 테스트 커버리지, fixture 지원 |
-| **Deployment** | Railway | - | 간편한 배포, MySQL/Redis 통합 |
-| **Containerization** | Docker | - | 일관된 실행 환경 |
+| 계층                 | 기술       | 버전    | 선택 이유                         |
+| -------------------- | ---------- | ------- | --------------------------------- |
+| **Framework**        | Flask      | 3.0.0   | 경량, 빠른 개발, RESTful API 최적 |
+| **WSGI Server**      | Gunicorn   | 21.2.0  | 멀티 프로세스, 프로덕션 안정성    |
+| **Database**         | MySQL      | 8.0     | ACID 보장, 관계형 데이터 적합     |
+| **Cache**            | Redis      | 8.6.0   | 초고속 캐싱, TTL 지원             |
+| **ORM**              | SQLAlchemy | 2.0.25+ | 타입 안전, 마이그레이션 용이      |
+| **ETL**              | pandas     | 2.2.0   | 대용량 데이터 처리 최적화         |
+| **Testing**          | pytest     | 7.4.4   | 테스트 커버리지, fixture 지원     |
+| **Deployment**       | Railway    | -       | 간편한 배포, MySQL/Redis 통합     |
+| **Containerization** | Docker     | -       | 일관된 실행 환경                  |
 
 ---
 
@@ -171,30 +171,33 @@ curl -H "X-API-KEY: your-api-key-here" \
 
 ### 엔드포인트 목록
 
-| Method | Endpoint | Description | Response Time | Cache |
-|--------|----------|-------------|---------------|-------|
-| GET | `/health` | 서버 상태 확인 | 8ms | - |
-| GET | `/records` | 검진 데이터 페이징 조회 | 305ms | - |
-| GET | `/records/{id}` | 단일 레코드 조회 | 187ms | - |
-| GET | `/stats/risk` | 위험군 분포 통계 | 4ms (cached) | ✅ 60s |
-| GET | `/stats/age` | 연령대별 통계 | 4ms (cached) | ✅ 60s |
-| POST | `/simulate` | 위험도 계산 (Inference) | 12ms | - |
+| Method | Endpoint        | Description             | Response Time | Cache  |
+| ------ | --------------- | ----------------------- | ------------- | ------ |
+| GET    | `/health`       | 서버 상태 확인          | 8ms           | -      |
+| GET    | `/records`      | 검진 데이터 페이징 조회 | 305ms         | -      |
+| GET    | `/records/{id}` | 단일 레코드 조회        | 187ms         | -      |
+| GET    | `/stats/risk`   | 위험군 분포 통계        | 4ms (cached)  | ✅ 60s |
+| GET    | `/stats/age`    | 연령대별 통계           | 4ms (cached)  | ✅ 60s |
+| POST   | `/simulate`     | 위험도 계산 (Inference) | 12ms          | -      |
 
 ### 사용 예시
 
 **1. Records 조회 (페이징)**
+
 ```bash
 curl -H "X-API-KEY: your-key" \
   "http://localhost:5001/records?page=1&limit=20"
 ```
 
 **2. Stats 조회 (캐싱)**
+
 ```bash
 curl -H "X-API-KEY: your-key" \
   "http://localhost:5001/stats/risk"
 ```
 
 **3. Simulate (위험도 계산)**
+
 ```bash
 curl -X POST -H "X-API-KEY: your-key" \
   -H "Content-Type: application/json" \
@@ -222,15 +225,15 @@ curl -X POST -H "X-API-KEY: your-key" \
 
 ### 7가지 위험요인
 
-| 위험요인 | Cut-off 기준 | 가이드라인 출처 |
-|----------|--------------|----------------|
-| 고혈압 | SBP≥140 or DBP≥90 mmHg | 대한고혈압학회 |
-| 당뇨 | 공복혈당≥126 mg/dL | KDA/ADA |
-| 고콜레스테롤 | TC≥240 mg/dL | NCEP ATP III |
-| 고중성지방 | TG≥200 mg/dL | NCEP ATP III |
-| 저HDL 콜레스테롤 | HDL<40 mg/dL | NCEP ATP III |
-| 비만 (아시아) | BMI≥25 kg/m² | WHO Asia-Pacific |
-| 흡연 | 현재 흡연자 | NCEP ATP III |
+| 위험요인         | Cut-off 기준           | 가이드라인 출처  |
+| ---------------- | ---------------------- | ---------------- |
+| 고혈압           | SBP≥140 or DBP≥90 mmHg | 대한고혈압학회   |
+| 당뇨             | 공복혈당≥126 mg/dL     | KDA/ADA          |
+| 고콜레스테롤     | TC≥240 mg/dL           | NCEP ATP III     |
+| 고중성지방       | TG≥200 mg/dL           | NCEP ATP III     |
+| 저HDL 콜레스테롤 | HDL<40 mg/dL           | NCEP ATP III     |
+| 비만 (아시아)    | BMI≥25 kg/m²           | WHO Asia-Pacific |
+| 흡연             | 현재 흡연자            | NCEP ATP III     |
 
 ### Risk Group 분류 (ATP III Framework)
 
@@ -358,12 +361,12 @@ Risk Calculation
 
 ### API 성능
 
-| 엔드포인트 | Before | After | 개선율 | Speedup |
-|------------|--------|-------|--------|---------|
-| /stats/risk | 1,744ms | **4ms** | 99.8% | **436x** |
-| /stats/age | 2,177ms | **4ms** | 99.8% | **544x** |
-| /simulate | - | **12ms** | - | - |
-| /records | - | **305ms** | - | - |
+| 엔드포인트  | Before  | After     | 개선율 | Speedup  |
+| ----------- | ------- | --------- | ------ | -------- |
+| /stats/risk | 1,744ms | **4ms**   | 99.8%  | **436x** |
+| /stats/age  | 2,177ms | **4ms**   | 99.8%  | **544x** |
+| /simulate   | -       | **12ms**  | -      | -        |
+| /records    | -       | **305ms** | -      | -        |
 
 ### Redis 캐싱 효과
 
@@ -413,6 +416,7 @@ railway up
 ```
 
 **환경변수 설정**:
+
 - `DATABASE_URL`: MySQL 연결 (Private URL)
 - `REDIS_URL`: Redis 연결 (Private URL)
 - `API_KEY`: 인증용 API 키
@@ -475,23 +479,23 @@ medical-ai-serving/
 
 ## 📚 문서
 
-| 문서 | 설명 |
-|------|------|
-| [API_SPEC.md](docs/API_SPEC.md) | API 요청/응답 상세 명세 |
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | 시스템 아키텍처 및 데이터 흐름 |
-| [DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md) | 데이터 컬럼 정의 및 매핑 |
-| [DECISIONS.md](docs/DECISIONS.md) | 기술 선택 및 트레이드오프 (11개) |
-| [DEPLOYMENT.md](docs/DEPLOYMENT.md) | Railway 배포 가이드 |
-| [ERD.md](docs/ERD.md) | 데이터베이스 스키마 설계 |
-| [GUIDELINES.md](docs/GUIDELINES.md) | 임상 가이드라인 출처 |
-| [PERFORMANCE_REPORT.md](docs/PERFORMANCE_REPORT.md) | 상세 성능 측정 리포트 |
-| [PERFORMANCE_SUMMARY.md](docs/PERFORMANCE_SUMMARY.md) | 성과 요약 (Executive Report) |
+| 문서                                                  | 설명                             |
+| ----------------------------------------------------- | -------------------------------- |
+| [API_SPEC.md](docs/API_SPEC.md)                       | API 요청/응답 상세 명세          |
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md)               | 시스템 아키텍처 및 데이터 흐름   |
+| [DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md)         | 데이터 컬럼 정의 및 매핑         |
+| [DECISIONS.md](docs/DECISIONS.md)                     | 기술 선택 및 트레이드오프 (11개) |
+| [DEPLOYMENT.md](docs/DEPLOYMENT.md)                   | Railway 배포 가이드              |
+| [ERD.md](docs/ERD.md)                                 | 데이터베이스 스키마 설계         |
+| [GUIDELINES.md](docs/GUIDELINES.md)                   | 임상 가이드라인 출처             |
+| [PERFORMANCE_REPORT.md](docs/PERFORMANCE_REPORT.md)   | 상세 성능 측정 리포트            |
+| [PERFORMANCE_SUMMARY.md](docs/PERFORMANCE_SUMMARY.md) | 성과 요약 (Executive Report)     |
 
 ---
 
 ## 🎯 프로젝트 목표 달성
 
-### 백엔드 역량 증명
+### 백엔드 역량
 
 - ✅ **ETL 파이프라인**: 100만건 데이터 처리 (28분)
 - ✅ **Database 설계**: 2-tier 스키마, 7개 전략적 인덱스
@@ -513,28 +517,35 @@ medical-ai-serving/
 ## 🔧 기술적 하이라이트
 
 ### 1. Chunk-based ETL
+
 ```python
 for chunk in pd.read_csv(csv_file, chunksize=10000):
     chunk.to_sql('raw_health_check', engine, if_exists='append')
 ```
+
 → 메모리 효율적 대용량 처리 (6,033 rows/sec)
 
 ### 2. Strategic Indexing
+
 ```sql
 CREATE INDEX idx_composite_stats
 ON clean_risk_result (risk_group, invalid_flag);
 ```
+
 → 통계 쿼리 60% 속도 향상
 
 ### 3. Cache-Aside Pattern
+
 ```python
 @cached(ttl=60)
 def get_risk_stats():
     # 캐시 히트 시 4ms, 캐시 미스 시 1.8s → Redis 저장
 ```
+
 → 99.8% 성능 개선
 
 ### 4. Production-Ready Architecture
+
 - Gunicorn 멀티 프로세스 (2 workers × 2 threads)
 - Health check endpoint
 - API Key 인증
@@ -546,9 +557,10 @@ def get_risk_stats():
 ## 👨‍💻 개발자
 
 **오성진**
+
 - GitHub: [@xxjiinn](https://github.com/xxjiinn)
-- Email: [your-email]
-- Portfolio: JLK 백엔드 개발자 지원용 프로젝트
+- Email: [osj3382@gmail.com]
+- Portfolio: 백엔드 개발자 프로젝트
 
 ---
 
@@ -558,7 +570,7 @@ MIT License - 자유롭게 사용, 수정, 배포 가능
 
 ---
 
-## 🙏 감사의 글
+## 🙏 출처
 
 - **국민건강보험공단(NHIS)**: 건강검진 데이터 제공
 - **가이드라인 제공 기관**:

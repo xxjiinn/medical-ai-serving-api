@@ -21,9 +21,9 @@ def get_records():
     Query Parameters:
         - page: 페이지 번호 (default: 1)
         - limit: 페이지당 항목 수 (default: 20, max: 100)
-        - age_group: 연령대 필터 (5~18)
+        - age_group: 연령대 필터 (5~18, 25-29세~90세 초과)
         - gender: 성별 필터 (1: 남성, 2: 여성)
-        - risk_group: 위험군 필터
+        - risk_group: 위험군 필터 (CHD_RISK_EQUIVALENT, MULTIPLE_RISK_FACTORS, ZERO_TO_ONE_RISK_FACTOR)
     """
     # 파라미터
     page = request.args.get('page', 1, type=int)
@@ -117,11 +117,18 @@ def get_record(record_id):
 
         raw = clean.raw_record
 
+        # Age display 포맷팅 (age_group 5-18: 25-29세 ~ 90세 초과)
+        if raw.age_group_code == 18:
+            age_display = '90세 초과'
+        else:
+            age_start = raw.age_group_code * 5
+            age_display = f'{age_start}-{age_start + 4}세'
+
         # 응답
         return jsonify({
             'id': clean.id,
             'age_group': raw.age_group_code,
-            'age_display': f'{(raw.age_group_code * 5)}세',
+            'age_display': age_display,
             'gender': raw.gender_code,
             'gender_display': '남성' if raw.gender_code == 1 else '여성',
             'height': raw.height,

@@ -139,6 +139,8 @@ def simulate():
         }), 400
 
     # 범위 검증
+    # age_group 5-18: 국민건강보험공단 CSV 데이터에서 실제 존재하는 범위
+    # - 5 = 25-29세, 6 = 30-34세, ..., 18 = 90세 초과
     validations = {
         'age_group': (5, 18),
         'gender': (1, 2),
@@ -173,11 +175,18 @@ def simulate():
     # Inference 시간
     inference_time_ms = int((time.time() - start_time) * 1000)
 
+    # Age display 포맷팅 (age_group 5-18: 25-29세 ~ 90세 초과)
+    if data['age_group'] == 18:
+        age_display = '90세 초과'
+    else:
+        age_start = data['age_group'] * 5
+        age_display = f'{age_start}-{age_start + 4}세'
+
     # 응답
     return jsonify({
         'input': {
             'age_group': data['age_group'],
-            'age_display': f"{data['age_group'] * 5}세",
+            'age_display': age_display,
             'gender': data['gender'],
             'gender_display': '남성' if data['gender'] == 1 else '여성',
             'bmi': result['bmi']
