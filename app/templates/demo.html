@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,7 +73,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .pulse-dot {
@@ -80,27 +83,38 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
-        input, select {
+        input,
+        select {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(59, 130, 246, 0.3);
             color: white;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             outline: none;
             border-color: #3B82F6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
+
         .row-highlight:hover {
-        background-color: rgba(59, 130, 246, 0.1) !important;
-        border-left: 4px solid #3B82F6;
-    }
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            border-left: 4px solid #3B82F6;
+        }
     </style>
 </head>
+
 <body class="text-white">
     <!-- Header -->
     <header class="border-b border-gray-800">
@@ -108,19 +122,22 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <div class="text-2xl font-bold gradient-text">Medical AI Risk Profiling</div>
-                    <span class="px-3 py-1 text-xs font-semibold bg-jlk-purple/20 text-jlk-cyan rounded-full border border-jlk-cyan/30">
+                    <span
+                        class="px-3 py-1 text-xs font-semibold bg-jlk-purple/20 text-jlk-cyan rounded-full border border-jlk-cyan/30">
                         LIVE DEMO
                     </span>
                 </div>
                 <div class="flex items-center space-x-4">
                     <div class="flex items-center space-x-2">
                         <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
-                        <span class="text-sm text-gray-400">API Status: <span class="text-green-400 font-semibold" id="apiStatus">Checking...</span></span>
+                        <span class="text-sm text-gray-400">API Status: <span class="text-green-400 font-semibold"
+                                id="apiStatus">Checking...</span></span>
                     </div>
                     <a href="https://github.com/xxjiinn/medical-ai-serving-api" target="_blank"
-                       class="text-gray-400 hover:text-jlk-cyan transition">
+                        class="text-gray-400 hover:text-jlk-cyan transition">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                         </svg>
                     </a>
                 </div>
@@ -144,7 +161,7 @@
                     Live Demo 체험하기
                 </button>
                 <a href="https://github.com/xxjiinn/medical-ai-serving-api" target="_blank"
-                   class="px-8 py-3 rounded-lg font-semibold bg-gray-800 hover:bg-gray-700 transition border border-gray-700">
+                    class="px-8 py-3 rounded-lg font-semibold bg-gray-800 hover:bg-gray-700 transition border border-gray-700">
                     GitHub 보기
                 </a>
             </div>
@@ -182,13 +199,16 @@
     </section>
 
     <!-- Modal -->
-    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50" onclick="closeModal(event)">
-        <div class="bg-gray-900 rounded-2xl p-8 max-w-2xl w-full mx-4 border border-gray-800 card-glow" onclick="event.stopPropagation()">
+    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50"
+        onclick="closeModal(event)">
+        <div class="bg-gray-900 rounded-2xl p-8 max-w-2xl w-full mx-4 border border-gray-800 card-glow"
+            onclick="event.stopPropagation()">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold gradient-text" id="modalTitle"></h3>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-white transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
@@ -285,7 +305,7 @@
                                 <span id="totalFilteredCount" class="text-white font-bold">0</span>
                             </div>
                             <p class="text-xs text-gray-500 mt-1">
-                                💡 전체 100만 레코드 중 유효한 데이터만 표시 <br> 필수 필드 누락/생물학적 범위 초과 레코드 제외
+                                💡 전체 100만 레코드 중 유효한 데이터만 표시 <br>⚠️ [필수 필드 누락/생물학적 범위 초과] 레코드는 제외
                             </p>
                         </div>
                     </div>
@@ -340,7 +360,8 @@
                                 </select>
                             </div>
                             <div class="flex items-end">
-                                <button onclick="fetchRecords()" class="btn-primary w-full px-4 py-2 rounded text-sm font-semibold">
+                                <button onclick="fetchRecords()"
+                                    class="btn-primary w-full px-4 py-2 rounded text-sm font-semibold">
                                     🔍 조회
                                 </button>
                             </div>
@@ -377,10 +398,12 @@
                         Showing <span id="recordsShowing" class="text-white font-semibold">0</span> records
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button onclick="prevPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition" id="prevBtn">Previous</button>
-                        <span>Page <span id="currentPage" class="text-white font-semibold">1</span> of <span id="totalPages"
-                                class="text-white font-semibold">1</span></span>
-                        <button onclick="nextPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition" id="nextBtn">Next</button>
+                        <button onclick="prevPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition"
+                            id="prevBtn">Previous</button>
+                        <span>Page <span id="currentPage" class="text-white font-semibold">1</span> of <span
+                                id="totalPages" class="text-white font-semibold">1</span></span>
+                        <button onclick="nextPage()" class="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition"
+                            id="nextBtn">Next</button>
                     </div>
                 </div>
             </div>
@@ -458,7 +481,8 @@
                                 </select>
                             </div>
                             <div class="flex items-end">
-                                <button onclick="simulateRisk()" class="btn-primary w-full px-6 py-2 rounded-lg font-semibold">
+                                <button onclick="simulateRisk()"
+                                    class="btn-primary w-full px-6 py-2 rounded-lg font-semibold">
                                     위험도 계산
                                 </button>
                             </div>
@@ -483,9 +507,11 @@
             <div class="text-2xl font-bold gradient-text mb-4">Medical AI Risk Profiling System</div>
             <p class="text-gray-400 mb-4">Built with Flask • Redis • MySQL • Railway</p>
             <div class="flex justify-center space-x-6 text-sm text-gray-500">
-                <a href="https://github.com/xxjiinn/medical-ai-serving-api" class="hover:text-jlk-cyan transition">GitHub</a>
+                <a href="https://github.com/xxjiinn/medical-ai-serving-api"
+                    class="hover:text-jlk-cyan transition">GitHub</a>
                 <span>•</span>
-                <a href="https://medical-ai-serving-api-production.up.railway.app/health" class="hover:text-jlk-cyan transition">API Health</a>
+                <a href="https://medical-ai-serving-api-production.up.railway.app/health"
+                    class="hover:text-jlk-cyan transition">API Health</a>
                 <span>•</span>
                 <span>ATP III Clinical Guidelines</span>
             </div>
@@ -538,7 +564,7 @@
 
         // Display Risk Chart
         function displayRiskChart(distribution) {
-            
+
             const ctx = document.getElementById('riskChart');
 
             if (riskChart) riskChart.destroy();
@@ -612,7 +638,7 @@
                             borderWidth: 1,
                             padding: 12,
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     const count = context.dataIndex === 0 ? lowCount : context.dataIndex === 1 ? multiCount : highCount;
                                     return [
                                         `비율: ${context.parsed}%`,
@@ -627,7 +653,7 @@
                                 size: 16,
                                 weight: 'bold'
                             },
-                            formatter: function(value, context) {
+                            formatter: function (value, context) {
                                 return value + '%';
                             }
                         }
@@ -719,10 +745,10 @@
                             bodyFont: { size: 13 },
                             bodySpacing: 6,
                             callbacks: {
-                                title: function(context) {
+                                title: function (context) {
                                     return context[0].label;
                                 },
-                                label: function(context) {
+                                label: function (context) {
                                     const avgRisk = context.dataset.avgRisk[context.dataIndex];
                                     return [
                                         `검진자: ${context.parsed.y.toLocaleString()}명`,
@@ -737,8 +763,8 @@
                             beginAtZero: true,
                             ticks: {
                                 color: '#9CA3AF',
-                                callback: function(value) {
-                                    return value >= 1000 ? (value/1000).toFixed(0) + 'K' : value;
+                                callback: function (value) {
+                                    return value >= 1000 ? (value / 1000).toFixed(0) + 'K' : value;
                                 }
                             },
                             grid: { color: 'rgba(75, 85, 99, 0.2)' }
@@ -920,22 +946,42 @@
 
                 const explanations = res.result.explanations || [];
 
+                /* 수정 후 (simulateRisk 함수 내부의 explanations 처리 로직) */
                 result.innerHTML = `
-                    <div class="text-center mb-4">
+                    <div class="text-center mb-6">
                         <div class="text-3xl font-bold ${getRiskGroupTextColor(res.result.risk_group)} mb-2">
                             ${formatRiskGroup(res.result.risk_group)}
                         </div>
-                        <div class="text-sm text-gray-400">BMI: ${res.input.bmi}</div>
+                        <div class="inline-block px-3 py-1 bg-gray-800 rounded-full text-xs text-gray-400">
+                            BMI: ${res.input.bmi}
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        <div class="text-xs font-semibold text-gray-400 mb-2">Risk Factors (${res.result.risk_factor_count}/7)</div>
-                        ${explanations.map(exp => `
-                            <div class="flex items-start space-x-2 text-sm">
-                                <div class="w-2 h-2 bg-red-500 rounded-full mt-1.5"></div>
-                                <span class="text-gray-300">${exp}</span>
+                    <div class="space-y-3">
+                        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                            Detected Risk Factors (${res.result.risk_factor_count}/7)
+                        </div>
+                        <div class="grid grid-cols-1 gap-2">
+                            ${explanations.map(exp => {
+                        // ':' 기준으로 타이틀과 수치 분리 (가독성 향상)
+                        const [title, details] = exp.split(':');
+                        return `
+                                    <div class="flex flex-col p-3 bg-red-500/10 border border-red-500/20 rounded-xl hover:bg-red-500/15 transition group">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-red-400 font-bold text-xs uppercase">${title}</span>
+                                            <div class="w-1.5 h-1.5 bg-red-500 rounded-full group-hover:animate-pulse"></div>
+                                        </div>
+                                        <div class="text-gray-300 text-sm leading-snug">
+                                            ${details || ''}
+                                        </div>
+                                    </div>
+                                `;
+                    }).join('')}
+                        </div>
+                        ${explanations.length === 0 ? `
+                            <div class="text-center py-6 bg-green-500/5 border border-green-500/20 rounded-xl">
+                                <span class="text-green-400 text-sm italic">No risk factors detected</span>
                             </div>
-                        `).join('')}
-                        ${explanations.length === 0 ? '<div class="text-sm text-gray-500">No risk factors detected</div>' : ''}
+                        ` : ''}
                     </div>
                 `;
             } catch (error) {
@@ -1264,53 +1310,54 @@
 
 
         /* 추가할 부분 (Script 섹션 하단) */
-            function showRiskDetailModal(record) {
-                const modal = document.getElementById('modal');
-                const title = document.getElementById('modalTitle');
-                const content = document.getElementById('modalContent');
+        function showRiskDetailModal(record) {
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
 
-                title.textContent = `Record #${record.id} Risk Analysis`;
+            title.textContent = `Record #${record.id} Risk Analysis`;
 
-                // 위험 요인 매핑 (API 응답의 flags 키값 기준)
-                const factorLabels = {
-                    hypertension: '고혈압 (Hypertension)',
-                    diabetes: '당뇨 (Diabetes)',
-                    high_tc: '고콜레스테롤 (High TC)',
-                    high_tg: '고중성지방 (High TG)',
-                    low_hdl: '저HDL 콜레스테롤 (Low HDL)',
-                    obesity: '비만 (Obesity)',
-                    smoking: '흡연 (Smoking)'
-                };
+            // 위험 요인 매핑 (API 응답의 flags 키값 기준)
+            const factorLabels = {
+                hypertension: '고혈압 (Hypertension)',
+                diabetes: '당뇨 (Diabetes)',
+                high_tc: '고콜레스테롤 (High TC)',
+                high_tg: '고중성지방 (High TG)',
+                low_hdl: '저HDL 콜레스테롤 (Low HDL)',
+                obesity: '비만 (Obesity)',
+                smoking: '흡연 (Smoking)'
+            };
 
-                let factorsHtml = '<div class="space-y-4">';
-                factorsHtml += `<div class="p-4 bg-jlk-navy/50 rounded-lg border border-jlk-purple/30 mb-4">
+            let factorsHtml = '<div class="space-y-4">';
+            factorsHtml += `<div class="p-4 bg-jlk-navy/50 rounded-lg border border-jlk-purple/30 mb-4">
                         <p class="text-sm text-gray-400">검진 정보: ${getAgeDisplay(record.age_group)} / ${record.gender === 1 ? '남성' : '여성'} / BMI ${record.bmi}</p>
                     </div>`;
-                factorsHtml += '<h4 class="font-bold text-white mb-2">검출된 위험 요인:</h4>';
+            factorsHtml += '<h4 class="font-bold text-white mb-2">검출된 위험 요인:</h4>';
 
-                let foundAny = false;
-                Object.entries(record.flags).forEach(([key, value]) => {
-                    if (value && factorLabels[key]) {
-                        foundAny = true;
-                        factorsHtml += `
+            let foundAny = false;
+            Object.entries(record.flags).forEach(([key, value]) => {
+                if (value && factorLabels[key]) {
+                    foundAny = true;
+                    factorsHtml += `
                 <div class="flex items-center space-x-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
                     <div class="w-2 h-2 bg-red-500 rounded-full"></div>
                     <span class="text-gray-200 text-sm font-medium">${factorLabels[key]}</span>
                 </div>
             `;
-                    }
-                });
-
-                if (!foundAny) {
-                    factorsHtml += '<p class="text-gray-500 italic">검출된 위험 요인이 없습니다. (Clean Record)</p>';
                 }
+            });
 
-                factorsHtml += '</div>';
-
-                content.innerHTML = factorsHtml;
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+            if (!foundAny) {
+                factorsHtml += '<p class="text-gray-500 italic">검출된 위험 요인이 없습니다. (Clean Record)</p>';
             }
+
+            factorsHtml += '</div>';
+
+            content.innerHTML = factorsHtml;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
     </script>
 </body>
+
 </html>
