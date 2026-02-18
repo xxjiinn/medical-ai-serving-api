@@ -5,17 +5,11 @@ FROM python:3.11-slim as builder
 
 WORKDIR /app
 
-# Install build dependencies (for pandas, numpy, cryptography, etc.)
+# Install build dependencies (only for cryptography)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
     gcc \
-    g++ \
-    gfortran \
-    python3-dev \
     libffi-dev \
     libssl-dev \
-    libopenblas-dev \
-    pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies

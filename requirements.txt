@@ -10,9 +10,8 @@ cryptography==41.0.7
 # Redis Cache
 redis==5.0.1
 
-# Data Processing
-pandas==2.2.0
-numpy==1.26.3
+# Data Processing (ETL only - see requirements-etl.txt)
+# pandas and numpy are NOT needed for API server
 
 # Testing
 pytest==7.4.4
