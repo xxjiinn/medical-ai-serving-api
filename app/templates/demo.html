@@ -557,6 +557,7 @@
 
         let riskChart = null;
         let ageChart = null;
+        let lastSimulationResult = null;  // Store simulation result for chart highlighting
 
         // Check API Health
         async function checkAPIHealth() {
@@ -606,6 +607,9 @@
             const multiCount = distribution.MULTIPLE_RISK_FACTORS.count;
             const highCount = distribution.CHD_RISK_EQUIVALENT.count;
 
+            const riskGroups = ['ZERO_TO_ONE_RISK_FACTOR', 'MULTIPLE_RISK_FACTORS', 'CHD_RISK_EQUIVALENT'];
+            const userRiskIndex = lastSimulationResult ? riskGroups.indexOf(lastSimulationResult.risk_group) : -1;
+
             riskChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -626,11 +630,11 @@
                             'rgba(239, 68, 68, 0.8)'
                         ],
                         borderColor: [
-                            'rgba(34, 197, 94, 1)',
-                            'rgba(251, 191, 36, 1)',
-                            'rgba(239, 68, 68, 1)'
+                            userRiskIndex === 0 ? 'rgba(34, 197, 94, 1)' : 'rgba(34, 197, 94, 1)',
+                            userRiskIndex === 1 ? 'rgba(251, 191, 36, 1)' : 'rgba(251, 191, 36, 1)',
+                            userRiskIndex === 2 ? 'rgba(239, 68, 68, 1)' : 'rgba(239, 68, 68, 1)'
                         ],
-                        borderWidth: 3
+                        borderWidth: userRiskIndex >= 0 ? [userRiskIndex === 0 ? 6 : 3, userRiskIndex === 1 ? 6 : 3, userRiskIndex === 2 ? 6 : 3] : 3
                     }]
                 },
                 options: {
@@ -641,7 +645,7 @@
                             display: true,
                             position: 'bottom',
                             labels: {
-                                color: '#E5E7EB', // 1. 전체 라벨 색상 지정
+                                color: '#E5E7EB',
                                 font: { size: 12, weight: '500' },
                                 padding: 20,
                                 usePointStyle: true,
@@ -650,14 +654,15 @@
                                     return data.labels.map((label, i) => {
                                         const value = data.datasets[0].data[i];
                                         const count = i === 0 ? lowCount : i === 1 ? multiCount : highCount;
+                                        const youMarker = userRiskIndex === i ? ' ← 당신' : '';
                                         return {
-                                            text: `${label}: ${value}% (${count.toLocaleString()}명)`,
+                                            text: `${label}: ${value}% (${count.toLocaleString()}명)${youMarker}`,
                                             fillStyle: data.datasets[0].backgroundColor[i],
                                             strokeStyle: data.datasets[0].borderColor[i],
                                             lineWidth: 2,
                                             hidden: false,
                                             index: i,
-                                            fontColor: '#E5E7EB' // 2. 각 라벨 객체에 텍스트 색상 강제 주입 
+                                            fontColor: userRiskIndex === i ? '#fbbf24' : '#E5E7EB'
                                         };
                                     });
                                 }
@@ -722,7 +727,8 @@
 
             const labels = [];
             const totalCounts = [];
-            const avgRiskData = []; // For tooltip only
+            const avgRiskData = [];
+            const barColors = [];
 
             // Age group code to age range mapping
             const ageRangeMap = {
@@ -743,6 +749,13 @@
                 // Estimate average risk (for tooltip)
                 const avgRisk = (value.count / 100000 * 1.5 + Math.random() * 0.5).toFixed(1);
                 avgRiskData.push(avgRisk);
+
+                // Highlight user's age group
+                if (lastSimulationResult && parseInt(key) === lastSimulationResult.age_group) {
+                    barColors.push('rgba(251, 191, 36, 0.9)');  // Gold for user
+                } else {
+                    barColors.push('rgba(59, 130, 246, 0.8)');  // Default blue
+                }
             });
 
             const container = document.getElementById('ageChartContainer');
@@ -755,8 +768,8 @@
                     datasets: [{
                         label: '검진자 수',
                         data: totalCounts,
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        borderColor: 'rgba(59, 130, 246, 1)',
+                        backgroundColor: barColors,
+                        borderColor: barColors.map(c => c.replace('0.8', '1').replace('0.9', '1')),
                         borderWidth: 2,
                         avgRisk: avgRiskData // Store for tooltip
                     }]
@@ -976,6 +989,12 @@
                     result.innerHTML = `<div class="text-red-400 text-sm">${res.message}</div>`;
                     return;
                 }
+
+                // Store simulation result for chart highlighting
+                lastSimulationResult = {
+                    risk_group: res.result.risk_group,
+                    age_group: data.age_group
+                };
 
                 const explanations = res.result.explanations || [];
 
@@ -1243,75 +1262,29 @@
                 responseTime: {
                     title: 'Response Time',
                     content: `
-                        <div class="space-y-4">
-                            <div class="bg-jlk-navy/50 rounded-lg p-6">
-                                <h4 class="text-lg font-semibold text-white mb-3">⚡ API 응답 시간 최적화</h4>
-                                <div class="grid grid-cols-3 gap-4 mb-6">
-                                    <div class="bg-black/30 rounded-lg p-4 text-center">
-                                        <div class="text-jlk-coral text-3xl font-bold">4ms</div>
-                                        <div class="text-xs text-gray-500 mt-2">평균 응답</div>
-                                    </div>
-                                    <div class="bg-black/30 rounded-lg p-4 text-center">
-                                        <div class="text-green-400 text-3xl font-bold">2ms</div>
-                                        <div class="text-xs text-gray-500 mt-2">최소 응답</div>
-                                    </div>
-                                    <div class="bg-black/30 rounded-lg p-4 text-center">
-                                        <div class="text-yellow-400 text-3xl font-bold">8ms</div>
-                                        <div class="text-xs text-gray-500 mt-2">최대 응답</div>
-                                    </div>
-                                </div>
+                        <div class="space-y-3">
+                            <div class="bg-jlk-navy/50 rounded-lg p-4">
+                                <h4 class="text-base font-semibold text-white mb-2">⚡ Average: 4ms</h4>
+                                <p class="text-xs text-gray-400">Redis cache + MySQL indexing optimization</p>
                             </div>
-                            <div class="bg-jlk-navy/50 rounded-lg p-6">
-                                <h4 class="text-lg font-semibold text-white mb-3">📈 엔드포인트별 성능</h4>
-                                <div class="space-y-3 text-sm">
-                                    <div class="flex justify-between items-center p-3 bg-black/30 rounded">
-                                        <div>
-                                            <div class="font-semibold text-white">GET /stats/risk</div>
-                                            <div class="text-xs text-gray-500">캐시 히트 시</div>
-                                        </div>
-                                        <div class="text-jlk-cyan font-bold">4ms</div>
+                            <div class="bg-jlk-navy/50 rounded-lg p-4">
+                                <h4 class="text-base font-semibold text-white mb-2">📈 Endpoint Performance</h4>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between">
+                                        <span>GET /stats/risk</span>
+                                        <span class="text-jlk-cyan font-bold">4ms</span>
                                     </div>
-                                    <div class="flex justify-between items-center p-3 bg-black/30 rounded">
-                                        <div>
-                                            <div class="font-semibold text-white">GET /stats/age</div>
-                                            <div class="text-xs text-gray-500">캐시 히트 시</div>
-                                        </div>
-                                        <div class="text-jlk-cyan font-bold">4ms</div>
+                                    <div class="flex justify-between">
+                                        <span>GET /stats/age</span>
+                                        <span class="text-jlk-cyan font-bold">4ms</span>
                                     </div>
-                                    <div class="flex justify-between items-center p-3 bg-black/30 rounded">
-                                        <div>
-                                            <div class="font-semibold text-white">POST /simulate</div>
-                                            <div class="text-xs text-gray-500">위험도 계산</div>
-                                        </div>
-                                        <div class="text-green-400 font-bold">&lt;1ms</div>
+                                    <div class="flex justify-between">
+                                        <span>POST /simulate</span>
+                                        <span class="text-green-400 font-bold">&lt;1ms</span>
                                     </div>
-                                    <div class="flex justify-between items-center p-3 bg-black/30 rounded">
-                                        <div>
-                                            <div class="font-semibold text-white">GET /records</div>
-                                            <div class="text-xs text-gray-500">페이지네이션</div>
-                                        </div>
-                                        <div class="text-yellow-400 font-bold">50-80ms</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-jlk-navy/50 rounded-lg p-6">
-                                <h4 class="text-lg font-semibold text-white mb-3">🚀 프로덕션 배포 스펙</h4>
-                                <div class="grid grid-cols-2 gap-3 text-sm">
-                                    <div class="bg-black/30 rounded p-3">
-                                        <div class="text-gray-500">Gunicorn Workers</div>
-                                        <div class="text-white font-semibold">2 workers × 2 threads</div>
-                                    </div>
-                                    <div class="bg-black/30 rounded p-3">
-                                        <div class="text-gray-500">Platform</div>
-                                        <div class="text-white font-semibold">Railway (Singapore)</div>
-                                    </div>
-                                    <div class="bg-black/30 rounded p-3">
-                                        <div class="text-gray-500">Database</div>
-                                        <div class="text-white font-semibold">MySQL (Private Network)</div>
-                                    </div>
-                                    <div class="bg-black/30 rounded p-3">
-                                        <div class="text-gray-500">Cache</div>
-                                        <div class="text-white font-semibold">Redis (In-Memory)</div>
+                                    <div class="flex justify-between">
+                                        <span>GET /records</span>
+                                        <span class="text-yellow-400 font-bold">50-80ms</span>
                                     </div>
                                 </div>
                             </div>
