@@ -353,7 +353,7 @@
                     <div>
                         <div class="inline-block px-3 py-1 bg-jlk-purple/30 border border-jlk-purple/50 rounded-full text-xs font-semibold text-jlk-cyan mb-2">STEP 2</div>
                         <h3 class="text-2xl font-bold text-white">다른 사람들과 비교해보기</h3>
-                        <p class="text-sm text-gray-400 mt-1">ATP III 프레임워크 기반 위험군 분포</p>
+                        <p class="text-sm text-gray-400 mt-1">ATP III 프레임워크 기반 위험군 분포 (전체: 340,686명)</p>
                     </div>
                     <button onclick="fetchRiskStats()" class="btn-primary px-6 py-2 rounded-lg text-sm font-semibold">
                         통계 조회
@@ -646,7 +646,16 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: false,
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 1200,
+                        easing: 'easeOutQuart',
+                        onProgress: function(animation) {
+                            const progress = animation.currentStep / animation.numSteps;
+                            ctx.style.opacity = Math.min(progress * 1.5, 1);
+                        }
+                    },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
@@ -711,11 +720,12 @@
             const avgRiskData = [];
             const barColors = [];
 
-            // Age group code to age range mapping
+            // Age group code to age range mapping (5-18 from API)
             const ageRangeMap = {
-                '1': '20-24세', '2': '25-29세', '3': '30-34세', '4': '35-39세',
-                '5': '40-44세', '6': '45-49세', '7': '50-54세', '8': '55-59세',
-                '9': '60-64세', '10': '65-69세', '11': '70-74세', '12': '75-79세', '13': '80-84세'
+                '5': '25-29세', '6': '30-34세', '7': '35-39세', '8': '40-44세',
+                '9': '45-49세', '10': '50-54세', '11': '55-59세', '12': '60-64세',
+                '13': '65-69세', '14': '70-74세', '15': '75-79세', '16': '80-84세',
+                '17': '85-89세', '18': '90세 초과'
             };
 
             // Sort by age group code
