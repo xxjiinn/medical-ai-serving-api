@@ -740,42 +740,22 @@
             const avgRiskData = [];
             const barColors = [];
 
-            // Age group code to age range mapping (5-18 from API)
-            const ageRangeMap = {
-                '5': '25-29세', '6': '30-34세', '7': '35-39세', '8': '40-44세',
-                '9': '45-49세', '10': '50-54세', '11': '55-59세', '12': '60-64세',
-                '13': '65-69세', '14': '70-74세', '15': '75-79세', '16': '80-84세',
-                '17': '85-89세', '18': '90세 초과'
-            };
+            // Filter and sort age distribution array (API returns array, not object)
+            const filteredData = distribution
+                .filter(item => item.age_group >= 5 && item.age_group <= 18)
+                .sort((a, b) => a.age_group - b.age_group);
 
-            // Sort by age group code and filter valid range (5-18)
-            const sortedEntries = Object.entries(distribution)
-                .filter(([key, value]) => {
-                    const ageCode = parseInt(key);
-                    return ageCode >= 5 && ageCode <= 18;
-                })
-                .sort((a, b) => {
-                    return parseInt(a[0]) - parseInt(b[0]);
-                });
-
-
-            const userAgeGroupCode = lastSimulationResult ? String(lastSimulationResult.age_group) : null;
-
-            sortedEntries.forEach(([key, value]) => {
-                const ageRange = ageRangeMap[key] || value.age_range || `${key}세`;
+            filteredData.forEach(item => {
+                const ageRange = item.age_display;
                 labels.push(ageRange);
-                totalCounts.push(value.count);
+                totalCounts.push(item.count);
+                avgRiskData.push(item.avg_risk_factor_count || 0);
 
-                const avgRisk = (value.count / 100000 * 1.5 + Math.random() * 0.5).toFixed(1);
-                avgRiskData.push(avgRisk);
-
-                const userAgeGroupValue = document.getElementById('simAge').value;
-                const selectedOptionText = document.querySelector(`#simAge option[value="${userAgeGroupValue}"]`).textContent;
-
-                if (lastSimulationResult && ageRange === selectedOptionText) {
-                    barColors.push('rgba(251, 191, 36, 0.9)'); // 금색
+                // Highlight user's age group bar
+                if (lastSimulationResult && item.age_group === lastSimulationResult.age_group) {
+                    barColors.push('rgba(251, 191, 36, 0.9)');
                 } else {
-                    barColors.push('rgba(59, 130, 246, 0.8)'); // 기본 파란색
+                    barColors.push('rgba(59, 130, 246, 0.8)');
                 }
             });
 
@@ -790,7 +770,7 @@
                 afterDatasetsDraw(chart) {
                     if (!lastSimulationResult) return;
                     const ag = lastSimulationResult.age_group;
-                    const uLabel = ageRangeMap[String(ag)] || (ag === 18 ? '90세 초과' : `${ag * 5}-${ag * 5 + 4}세`);
+                    const uLabel = ag === 18 ? '90세 초과' : `${ag * 5}-${ag * 5 + 4}세`;
                     const idx = chart.data.labels.indexOf(uLabel);
                     if (idx === -1) return;
                     const bar = chart.getDatasetMeta(0).data[idx];
