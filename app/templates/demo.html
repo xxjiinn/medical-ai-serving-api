@@ -723,26 +723,26 @@
                 return parseInt(a[0]) - parseInt(b[0]);
             });
 
-            // Compute user's age label for comparison
-            const userAgeLabel = lastSimulationResult
-                ? (lastSimulationResult.age_group === 18 ? '90세 초과' : `${lastSimulationResult.age_group * 5}-${lastSimulationResult.age_group * 5 + 4}세`)
-                : null;
+            
+            const userAgeGroupCode = lastSimulationResult ? String(lastSimulationResult.age_group) : null;
 
             sortedEntries.forEach(([key, value]) => {
                 const ageRange = ageRangeMap[key] || value.age_range || `${key}세`;
                 labels.push(ageRange);
                 totalCounts.push(value.count);
-                // Estimate average risk (for tooltip)
+
                 const avgRisk = (value.count / 100000 * 1.5 + Math.random() * 0.5).toFixed(1);
                 avgRiskData.push(avgRisk);
 
-                // Highlight user's age group (label-based comparison)
-                if (userAgeLabel && ageRange === userAgeLabel) {
-                    barColors.push('rgba(251, 191, 36, 0.9)');
+                // 핵심 수정: API에서 내려온 age_group 코드(key)와 사용자의 age_group 코드를 직접 비교
+                if (userAgeGroupCode && key === userAgeGroupCode) {
+                    barColors.push('rgba(251, 191, 36, 0.9)'); // 금색 (Highlight)
                 } else {
-                    barColors.push('rgba(59, 130, 246, 0.8)');
+                    barColors.push('rgba(59, 130, 246, 0.8)'); // 기본 파란색
                 }
             });
+
+
 
             const container = document.getElementById('ageChartContainer');
             container.style.height = '280px';
@@ -754,7 +754,7 @@
                 afterDatasetsDraw(chart) {
                     if (!lastSimulationResult) return;
                     const ag = lastSimulationResult.age_group;
-                    const uLabel = ag === 18 ? '90세 초과' : `${ag * 5}-${ag * 5 + 4}세`;
+                    const uLabel = ageRangeMap[String(ag)] || (ag === 18 ? '90세 초과' : `${ag * 5}-${ag * 5 + 4}세`);
                     const idx = chart.data.labels.indexOf(uLabel);
                     if (idx === -1) return;
                     const bar = chart.getDatasetMeta(0).data[idx];

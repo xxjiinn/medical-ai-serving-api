@@ -99,6 +99,7 @@ Response (12ms)
 ```
 
 **특징**:
+
 - Database 접근 불필요 (Stateless)
 - 초저지연 (12ms)
 - 무한 확장 가능
@@ -131,8 +132,8 @@ Redis Check
       │
       │ SELECT risk_group, COUNT(*)
       │ FROM clean_risk_result
-      │ WHERE invalid_flag = false
       │ GROUP BY risk_group
+      │ -- (no invalid_flag filter: only valid records stored)
       ↓
     Aggregation (1.8s)
       │
@@ -141,12 +142,14 @@ Redis Check
 ```
 
 **Cache Key 구조**:
+
 ```
 cache:get_risk_stats:():{}
 cache:get_age_stats:():{}
 ```
 
 **최적화 효과**:
+
 - Cache Hit: **4ms** (99.8% 개선)
 - Cache Miss: 1,800ms → 다음 60초간 캐시 사용
 
@@ -168,9 +171,9 @@ MySQL Query
   │ SELECT clean_risk_result.*
   │ FROM clean_risk_result
   │ JOIN raw_health_check
-  │ WHERE invalid_flag = false
   │ ORDER BY id
   │ LIMIT 20 OFFSET 0
+  │ -- (no invalid_flag filter: only valid records stored)
   ↓
 Response (305ms)
   │
@@ -178,6 +181,7 @@ Response (305ms)
 ```
 
 **인덱스 사용**:
+
 - PRIMARY KEY (id) → LIMIT/OFFSET 최적화
 - idx_invalid_flag → WHERE 절 최적화
 
@@ -235,6 +239,7 @@ Response (305ms)
 ```
 
 **데이터 품질**:
+
 - Input: 1,000,000 rows
 - Valid: 340,686 rows (34%)
 - Invalid: 659,314 rows (66%) → 범위 초과, NULL 값
@@ -270,10 +275,12 @@ Response (305ms)
 ```
 
 **TTL 전략**:
+
 - Stats API: 60초 (통계는 실시간성 불필요)
 - 60초마다 자동 갱신 → 항상 최신 데이터 보장
 
 **Cache Invalidation**:
+
 - ETL 실행 시: 수동 캐시 삭제
 - TTL 만료 시: 자동 캐시 갱신
 
@@ -332,6 +339,7 @@ Response (305ms)
 ```
 
 **인덱스 전략**:
+
 1. **PRIMARY KEY**: 단일 레코드 조회
 2. **idx_age_group**: 연령대 필터링
 3. **idx_risk_group**: 위험군 필터링
@@ -384,6 +392,7 @@ Response (305ms)
 ```
 
 **보안 레이어**:
+
 1. **Transport**: HTTPS/TLS
 2. **Authentication**: API Key
 3. **Authorization**: Header-based
@@ -423,6 +432,7 @@ Response (305ms)
 ```
 
 **예상 처리량**:
+
 - 1 Instance: 166 req/sec
 - 3 Instances: 500 req/sec
 - 10 Instances: 1,660 req/sec

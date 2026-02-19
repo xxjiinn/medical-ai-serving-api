@@ -50,7 +50,7 @@ CREATE TABLE raw_health_check (
     subscriber_id        VARCHAR(20),
     province_code        TINYINT UNSIGNED,
     gender_code          TINYINT UNSIGNED NOT NULL,  -- 1: 남, 2: 여
-    age_group_code       TINYINT UNSIGNED NOT NULL,  -- 9~18
+    age_group_code       TINYINT UNSIGNED NOT NULL,  -- 5~18
 
     -- 신체 계측
     height               SMALLINT UNSIGNED,          -- cm (5cm 단위)
@@ -249,7 +249,7 @@ CREATE TABLE clean_risk_result (
 
 - `idx_risk_group`: 위험군별 통계 (`GROUP BY risk_group`)
 - `idx_risk_count`: 위험요인 개수별 분석
-- `idx_invalid`: 유효 데이터 필터링 (`WHERE invalid_flag=FALSE`)
+- `idx_invalid`: 유효성 플래그 인덱스 (모든 저장 레코드가 valid이므로 실질적으로 미사용)
 
 ### 2. 복합 인덱스
 
@@ -285,8 +285,8 @@ SELECT
     COUNT(*) as count,
     ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 1) as percentage
 FROM clean_risk_result
-WHERE invalid_flag = FALSE
 GROUP BY risk_group;
+-- Note: clean_risk_result contains ONLY valid records (invalid records not stored)
 ```
 
 **인덱스 사용**: `idx_composite_stats`
@@ -302,7 +302,6 @@ SELECT
     SUM(CASE WHEN c.risk_group = 'CHD_RISK_EQUIVALENT' THEN 1 ELSE 0 END) as high_risk_count
 FROM raw_health_check r
 JOIN clean_risk_result c ON r.id = c.raw_id
-WHERE c.invalid_flag = FALSE
 GROUP BY r.age_group_code
 ORDER BY r.age_group_code;
 ```
@@ -323,7 +322,6 @@ SELECT
     c.created_at
 FROM clean_risk_result c
 JOIN raw_health_check r ON c.raw_id = r.id
-WHERE c.invalid_flag = FALSE
 ORDER BY c.id
 LIMIT 20 OFFSET 0;
 ```
@@ -361,18 +359,18 @@ WHERE c.id = ?;
 ### raw_health_check
 
 - 행당 크기: ~50 bytes
-- 30만건: ~15MB (데이터) + 3MB (인덱스) = **18MB**
+- 100만건: ~50MB (데이터) + 5MB (인덱스) = **55MB**
 
 ### clean_risk_result
 
 - 행당 크기: ~40 bytes
-- 30만건: ~12MB (데이터) + 12MB (인덱스) = **24MB**
+- 34만건: ~14MB (데이터) + 14MB (인덱스) = **28MB**
 
 ### 총 DB 크기
 
-- **데이터**: 27MB
-- **인덱스**: 15MB
-- **총**: ~**42MB** (30만건 기준)
+- **데이터**: 64MB
+- **인덱스**: 19MB
+- **총**: ~**83MB** (실제 데이터 기준: raw 100만건, clean 34만건)
 
 Railway Hobby Plan (8GB): 충분
 

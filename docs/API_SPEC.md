@@ -97,8 +97,8 @@ GET /records?age_group=12&risk_group=MULTIPLE_RISK_FACTORS
   "pagination": {
     "page": 1,
     "limit": 20,
-    "total_items": 300000,
-    "total_pages": 15000
+    "total_items": 340686,
+    "total_pages": 17035
   }
 }
 ```
@@ -110,7 +110,7 @@ GET /records?age_group=12&risk_group=MULTIPLE_RISK_FACTORS
 ```json
 {
   "error": "Bad Request",
-  "message": "Invalid age_group. Must be between 9 and 18."
+  "message": "Invalid age_group. Must be between 5 and 18."
 }
 ```
 **HTTP 상태**: 400 Bad Request
@@ -164,13 +164,6 @@ GET /records/123
     "obesity": true,
     "smoking": true
   },
-  "explanations": [
-    "Hypertension: SBP≥140 or DBP≥90",
-    "High TC: total cholesterol≥240",
-    "Low HDL: hdl<40",
-    "Obesity(Asia): BMI≥25",
-    "Smoking: current smoker"
-  ],
   "rule_version": "guideline-v1",
   "inference_time_ms": 2,
   "created_at": "2026-02-17T10:30:00Z"
@@ -361,10 +354,10 @@ X-API-KEY: your-secret-key
     "flags": {
       "hypertension": true,
       "diabetes": true,
-      "high_tc": true,
-      "high_tg": true,
+      "high_total_cholesterol": true,
+      "high_triglycerides": true,
       "low_hdl": true,
-      "obesity": true,
+      "obesity_asia": true,
       "smoking": true
     },
     "explanations": [

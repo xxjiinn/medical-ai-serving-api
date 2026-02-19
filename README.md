@@ -1,4 +1,4 @@
-# Medical AI Inference Serving Backend
+# Medical Risk Profiling Inference Serving Backend
 
 > 🏥 건강검진 데이터 기반 위험요인 스크리닝 API - ETL부터 Serving까지
 
