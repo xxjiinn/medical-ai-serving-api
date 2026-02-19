@@ -907,8 +907,21 @@
                 }
             }
 
-            // --- Age Chart: redraw triggers marker plugin (no animation) ---
-            if (ageChart) ageChart.update('none');
+            // --- Age Chart: update bar colors for user position ---
+            if (ageChart) {
+                const userAgeGroup = lastSimulationResult.age_group;
+                const userLabel = userAgeGroup === 18 ? '90세 초과' : `${userAgeGroup * 5}-${userAgeGroup * 5 + 4}세`;
+                const userIndex = ageChart.data.labels.indexOf(userLabel);
+
+                // Reset all bars to blue, then highlight user's bar
+                ageChart.data.datasets[0].backgroundColor = ageChart.data.labels.map((label, idx) => {
+                    return idx === userIndex ? 'rgba(251, 191, 36, 0.9)' : 'rgba(59, 130, 246, 0.8)';
+                });
+                ageChart.data.datasets[0].borderColor = ageChart.data.labels.map((label, idx) => {
+                    return idx === userIndex ? 'rgba(251, 191, 36, 1)' : 'rgba(59, 130, 246, 1)';
+                });
+                ageChart.update('none');
+            }
             if (riskChart) riskChart.update('none');
         }
 
