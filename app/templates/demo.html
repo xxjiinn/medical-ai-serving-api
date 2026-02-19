@@ -734,9 +734,11 @@
                 const avgRisk = (value.count / 100000 * 1.5 + Math.random() * 0.5).toFixed(1);
                 avgRiskData.push(avgRisk);
 
-                // 핵심 수정: API에서 내려온 age_group 코드(key)와 사용자의 age_group 코드를 직접 비교
-                if (userAgeGroupCode && key === userAgeGroupCode) {
-                    barColors.push('rgba(251, 191, 36, 0.9)'); // 금색 (Highlight)
+                const userAgeGroupValue = document.getElementById('simAge').value;
+                const selectedOptionText = document.querySelector(`#simAge option[value="${userAgeGroupValue}"]`).textContent;
+
+                if (lastSimulationResult && ageRange === selectedOptionText) {
+                    barColors.push('rgba(251, 191, 36, 0.9)'); // 금색
                 } else {
                     barColors.push('rgba(59, 130, 246, 0.8)'); // 기본 파란색
                 }
@@ -748,7 +750,6 @@
             container.style.height = '280px';
 
             // Inline plugin: draw "▼ 내 위치" above user's bar
-            // Use afterDatasetsDraw so tooltip renders on top of the marker
             const ageMarkerPlugin = {
                 id: 'ageMarker',
                 afterDatasetsDraw(chart) {
