@@ -34,5 +34,5 @@ ENV PATH=/root/.local/bin:$PATH
 EXPOSE 5001
 
 # Run with gunicorn for production
-# Use shell form to properly expand environment variables
-CMD gunicorn --bind 0.0.0.0:${PORT:-5001} --workers 2 --threads 2 --timeout 120 run:app
+# Use shell form with explicit sh -c for environment variable expansion
+CMD sh -c "gunicorn --bind 0.0.0.0:${PORT:-5001} --workers 2 --threads 2 --timeout 120 run:app"
